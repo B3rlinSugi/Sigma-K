@@ -1,0 +1,48 @@
+import { User } from '@/types/auth';
+
+export const MOCK_USERS: User[] = [
+  {
+    id: 'usr-operator-01',
+    username: 'operator.pangan',
+    fullName: 'Budi Santoso, S.AP.',
+    nip: '19880412 201201 1 002',
+    email: 'budi.santoso@pangan.go.id',
+    role: 'USER',
+    institutionId: 'inst-kemenko-pangan',
+    institutionName: 'Kementerian Koordinator Bidang Pangan',
+    avatarUrl: '/avatars/operator.png',
+  },
+  {
+    id: 'usr-verifikator-01',
+    username: 'analis.kelembagaan',
+    fullName: 'Siti Rahmawati, S.Sos., M.AP.',
+    nip: '19850624 200912 2 001',
+    email: 'siti.rahmawati@menpan.go.id',
+    role: 'VERIFIKATOR',
+    institutionId: 'inst-kemenpanrb',
+    institutionName: 'Kementerian Pendayagunaan Aparatur Negara dan Reformasi Birokrasi',
+    avatarUrl: '/avatars/verifikator.png',
+  },
+  {
+    id: 'usr-admin-01',
+    username: 'admin.pusat',
+    fullName: 'Ahmad Fauzi, S.Kom., M.T.I.',
+    nip: '19820315 200604 1 003',
+    email: 'ahmad.fauzi@menpan.go.id',
+    role: 'ADMIN',
+    institutionId: 'inst-kemenpanrb',
+    institutionName: 'Kementerian Pendayagunaan Aparatur Negara dan Reformasi Birokrasi',
+    avatarUrl: '/avatars/admin.png',
+  },
+  {
+    id: 'usr-sesdep-01',
+    username: 'sesdep.kelembagaan',
+    fullName: 'Drs. Nanang Khoiruddin, M.Si.',
+    nip: '19691102 199403 1 001',
+    email: 'sesdep.ktl@menpan.go.id',
+    role: 'SESDEP',
+    institutionId: 'inst-kemenpanrb',
+    institutionName: 'Kementerian Pendayagunaan Aparatur Negara dan Reformasi Birokrasi',
+    avatarUrl: '/avatars/sesdep.png',
+  },
+];
