@@ -1,6 +1,9 @@
 """
-Ultra-Crisp Large-Typography Vector Diagram & UI Prototype Generator for SIGMA-K.
-Optimized for high-impact visual clarity in Word documents, PDFs, and 16:9 PowerPoint presentations.
+Generator Diagram Vektor & Prototipe Antarmuka Berbahasa Indonesia untuk SIGMA-K.
+Dirancang khusus untuk konsumsi Pimpinan dan Mentor:
+- Bahasa Indonesia yang lugas, baku, komunikatif, dan mudah dipahami.
+- Format 16:9 widescreen (1600x900) dengan tipografi tegas dan keterbacaan tinggi.
+- 0 Text Overlap, 0 Text Collision, tata letak seimbang dan rapi.
 """
 
 import os
@@ -21,30 +24,31 @@ def get_font(bold=False, size=24):
         path = F_CALIBRI_BOLD if bold else F_CALIBRI_REG
     return ImageFont.truetype(path, size)
 
-C_NAVY = "#0B2A4A"
-C_BLUE = "#1E40AF"
-C_BLUE_LIGHT = "#EFF6FF"
+# Palet Warna Resmi & Harmonis
+C_NAVY = "#0B2A4A"          # Biru Dongker Resmi (KemenPANRB)
+C_BLUE = "#1E40AF"          # Biru Primer
+C_BLUE_LIGHT = "#EFF6FF"    # Latar Biru Lembut
 C_BLUE_BORDER = "#3B82F6"
-C_GOLD = "#D4AF37"
-C_AMBER = "#B45309"
+C_GOLD = "#D4AF37"          # Aksen Emas
+C_AMBER = "#B45309"         # Oranye / Penapis
 C_AMBER_LIGHT = "#FFFBEB"
 C_AMBER_BORDER = "#F59E0B"
-C_EMERALD = "#047857"
+C_EMERALD = "#047857"       # Hijau / Verifikator & Sukses
 C_EMERALD_LIGHT = "#ECFDF5"
 C_EMERALD_BORDER = "#10B981"
-C_PURPLE = "#6B21A8"
+C_PURPLE = "#6B21A8"        # Ungu / Super Admin & Keputusan
 C_PURPLE_LIGHT = "#FAF5FF"
 C_PURPLE_BORDER = "#A855F7"
-C_RED = "#DC2626"
+C_RED = "#DC2626"           # Merah / Revisi & Peringatan
 C_RED_LIGHT = "#FEF2F2"
 C_RED_BORDER = "#EF4444"
-C_SLATE_DARK = "#0F172A"
-C_SLATE_MID = "#475569"
-C_SLATE_LIGHT = "#F8FAFC"
+C_SLATE_DARK = "#0F172A"    # Teks Utama
+C_SLATE_MID = "#475569"     # Teks Sekunder
+C_SLATE_LIGHT = "#F8FAFC"   # Latar Kartu
 C_BORDER_DEFAULT = "#CBD5E1"
 C_WHITE = "#FFFFFF"
 
-class UltraCanvas:
+class ExecutiveCanvas:
     def __init__(self, width=1600, height=900, bg="#FFFFFF"):
         self.w = width
         self.h = height
@@ -52,33 +56,39 @@ class UltraCanvas:
         self.draw = ImageDraw.Draw(self.img)
 
     def draw_top_title(self, title, subtitle=None):
-        f_title = get_font(bold=True, size=32)
+        f_title = get_font(bold=True, size=30)
         self.draw.text((self.w / 2, 38), title, fill=C_NAVY, font=f_title, anchor="mm")
         
         if subtitle:
-            f_sub = get_font(bold=False, size=18)
-            self.draw.text((self.w / 2, 72), subtitle, fill=C_SLATE_MID, font=f_sub, anchor="mm")
+            f_sub = get_font(bold=False, size=17)
+            self.draw.text((self.w / 2, 70), subtitle, fill=C_SLATE_MID, font=f_sub, anchor="mm")
 
     def draw_card(self, x, y, w, h, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=10,
-                  header_bg=None, header_text=None, header_color=C_WHITE, header_size=21,
-                  items=None, item_size=18, item_color=C_SLATE_DARK, line_spacing=30):
-        self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=bg, outline=border, width=border_w)
+                  header_bg=None, header_text=None, header_color=C_WHITE, header_size=20,
+                  items=None, item_size=16, item_color=C_SLATE_DARK, line_spacing=30):
+        # Background card
+        self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=bg, outline=border, width=int(border_w))
 
         content_top = y + 14
 
+        # With distinct header banner
         if header_bg and header_text:
             header_h = 42
             self.draw.rounded_rectangle([x, y, x + w, y + header_h], radius=radius, fill=header_bg)
             self.draw.rectangle([x, y + header_h - radius, x + w, y + header_h], fill=header_bg)
-            self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, outline=border, width=border_w)
+            self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, outline=border, width=int(border_w))
             
             f_head = get_font(bold=True, size=header_size)
             self.draw.text((x + w / 2, y + header_h / 2), header_text, fill=header_color, font=f_head, anchor="mm")
-            content_top = y + header_h + 12
+            content_top = y + header_h + 14
         elif header_text:
             f_head = get_font(bold=True, size=header_size)
-            self.draw.text((x + w / 2, y + 20), header_text, fill=header_color if header_color != C_WHITE else C_NAVY, font=f_head, anchor="mm")
-            content_top = y + 42
+            if not items:
+                # Pill banner single text
+                self.draw.text((x + w / 2, y + h / 2), header_text, fill=header_color, font=f_head, anchor="mm")
+            else:
+                self.draw.text((x + w / 2, y + 22), header_text, fill=header_color if header_color != C_WHITE else C_NAVY, font=f_head, anchor="mm")
+                content_top = y + 44
 
         if items:
             f_item = get_font(bold=False, size=item_size)
@@ -122,223 +132,262 @@ class UltraCanvas:
         rgb_img = Image.new("RGB", self.img.size, (255, 255, 255))
         rgb_img.paste(self.img, mask=self.img.split()[3])
         rgb_img.save(out_path, "PNG", dpi=(300, 300))
-        print(f"  [SAVED CRISP 16:9] {filename}")
+        print(f"  [BERHASIL DISIMPAN] {filename}")
 
 # -------------------------------------------------------------
-# 1. SYSTEM ARCHITECTURE
+# 1. ARSITEKTUR SISTEM
 # -------------------------------------------------------------
 def render_system_architecture():
-    c = UltraCanvas(1600, 900)
+    c = ExecutiveCanvas(1600, 900)
     c.draw_top_title("ARSITEKTUR SISTEM E-SKLD / SIGMA-K", 
-                     "Integrasi 4-Tier: Frontend Next.js 14, HTTP Gateway, Backend CodeIgniter 4, & MySQL eskld_db")
+                     "Integrasi 4 Lapisan: Antarmuka Web (Next.js), Gerbang Jaringan, Logika Bisnis (CodeIgniter 4) & Basis Data MySQL")
 
-    # Tier 1
-    c.draw_card(40, 95, 1520, 240, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="TIER 1: PRESENTATION LAYER (Next.js 14 + React 18 + TypeScript)", header_size=20)
+    # Lapisan 1
+    c.draw_card(40, 95, 1520, 240, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="LAPISAN 1: ANTARMUKA PENGGUNA (Next.js 14 + React 18 + TypeScript)", header_size=19)
 
     c.draw_card(55, 145, 360, 175, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2,
-                header_text="UI Components & Screens", header_size=17, header_color=C_BLUE,
-                items=["• Executive Dashboard (/)", "• Org Chart React Flow Canvas", "• Katalog Instansi (/institutions)", "• Submission & Revision UI", "• Verifier Workspace Studio"],
-                item_size=15.5, line_spacing=26)
+                header_text="Halaman & Komponen UI", header_size=17, header_color=C_BLUE,
+                items=[
+                    "• Dashboard Eksekutif Pimpinan",
+                    "• Bagan Organisasi Interaktif",
+                    "• Katalog Instansi Pemerintah",
+                    "• Formulir Usulan & Revisi",
+                    "• Ruang Kerja Verifikator"
+                ], item_size=15.5, line_spacing=26)
 
     c.draw_card(430, 145, 360, 175, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2,
-                header_text="State & Role Context", header_size=17, header_color=C_BLUE,
-                items=["• AuthProvider & RoleContext", "• Read-Only Auth Role Badge", "• Notification Context Provider", "• Dual-Mode Data Dispatcher", "  (NEXT_PUBLIC_DATA_MODE)"],
-                item_size=15.5, line_spacing=26)
+                header_text="Manajemen Sesi & Peran", header_size=17, header_color=C_BLUE,
+                items=[
+                    "• Penyedia Otentikasi (Auth)",
+                    "• Pengunci Hak Akses Pengguna",
+                    "• Pusat Pemberitahuan / Notif",
+                    "• Pengatur Aliran Data Sesi",
+                    "• Isolasi Peran Anti-Bypass"
+                ], item_size=15.5, line_spacing=26)
 
     c.draw_card(805, 145, 365, 175, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2,
-                header_text="Service Facades & DTO", header_size=17, header_color=C_BLUE,
-                items=["• AuthService, InstitutionService", "• OrganizationService (Tree)", "• SubmissionService (FSM)", "• AnalyticsService & AuditService", "• TypeScript Strict DTO Schemas"],
-                item_size=15.5, line_spacing=26)
+                header_text="Layanan Integrasi Bisnis", header_size=17, header_color=C_BLUE,
+                items=[
+                    "• Layanan Akun & Instansi",
+                    "• Layanan Struktur Organisasi",
+                    "• Layanan Alur Pengusulan",
+                    "• Layanan Analitik & Ekspor",
+                    "• Skema Data TypeScript Ketat"
+                ], item_size=15.5, line_spacing=26)
 
     c.draw_card(1185, 145, 360, 175, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2,
-                header_text="Domain Mappers", header_size=17, header_color=C_BLUE,
-                items=["• DTO (snake_case) -> Domain", "• Flatten Org Hierarchy Tree", "• BigInt to String ID Sanitizer", "• Workflow Status Normalizer", "• AppError Response Normalizer"],
-                item_size=15.5, line_spacing=26)
+                header_text="Penerjemah Struktur Data", header_size=17, header_color=C_BLUE,
+                items=[
+                    "• Konversi Data API ke UI",
+                    "• Penyusun Pohon Hierarki",
+                    "• Pembersih Format ID & Angka",
+                    "• Penyelaras Status Usulan",
+                    "• Penanganan Pesan Galat/Error"
+                ], item_size=15.5, line_spacing=26)
 
-    # Arrow Tier 1 -> Tier 2
-    c.draw_arrow(800, 340, 800, 390, color=C_BLUE, width=3, label="HTTPS JSON + Bearer JWT Token", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
+    # Panah Lapisan 1 -> Gerbang
+    c.draw_arrow(800, 340, 800, 390, color=C_BLUE, width=3, label="Protokol Aman HTTPS + Token Keamanan JWT", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
 
-    # Tier 2 Gateway
+    # Gerbang Jaringan
     c.draw_card(220, 390, 1160, 65, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2, radius=8,
-                header_text="HTTP CLIENT & TOKEN PROVIDER GATEWAY", header_size=18, header_color=C_BLUE,
-                items=["Native Fetch Client  •  Auto Authorization Header  •  AppError Status Normalizer  •  15s Signal"],
+                header_text="GERBANG JARINGAN & PENYEDIA TOKEN OTENTIKASI (HTTP GATEWAY)", header_size=17.5, header_color=C_BLUE,
+                items=["Klien Jaringan Otomatis  •  Penyisipan Token Resmi  •  Penanganan Kode Akses (401, 403, 404, 500)  •  Batas Waktu Respon 15 Detik"],
                 item_size=15, item_color=C_NAVY, line_spacing=0)
 
-    # Arrow Tier 2 -> Tier 3
-    c.draw_arrow(800, 460, 800, 510, color=C_BLUE, width=3, label="REST API Endpoints (/api/v1/*)", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
+    # Panah Gerbang -> Lapisan 2
+    c.draw_arrow(800, 460, 800, 510, color=C_BLUE, width=3, label="Panggilan Layanan REST API Terverifikasi", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
 
-    # Tier 3
-    c.draw_card(40, 510, 1520, 265, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="TIER 2: BACKEND & DOMAIN LOGIC (CodeIgniter 4.4.8 + PHP 8.2+)", header_size=20)
+    # Lapisan 2 Backend
+    c.draw_card(40, 510, 1520, 265, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="LAPISAN 2: LOGIKA BISNIS & KEAMANAN SISTEM (CodeIgniter 4.4.8 + PHP 8.2+)", header_size=19)
 
     c.draw_card(55, 560, 360, 200, bg=C_WHITE, border=C_AMBER_BORDER, border_w=2,
-                header_text="API Controllers & Filters", header_size=17, header_color=C_AMBER,
-                items=["• AuthFilter (JWT Verify)", "• AuthController (Login / Me)", "• InstitutionController", "• SubmissionWorkflowController", "• VerifierWorkflowController", "• ReportController (Summary)"],
-                item_size=15, line_spacing=26)
+                header_text="Pengendali API & Filter", header_size=17, header_color=C_AMBER,
+                items=[
+                    "• Filter Validasi Token JWT",
+                    "• Pengendali Akun & Sesi",
+                    "• Pengendali Master Instansi",
+                    "• Pengendali Usulan Organisasi",
+                    "• Pengendali Kerja Verifikator",
+                    "• Pengendali Laporan Eksekutif"
+                ], item_size=15, line_spacing=26)
 
     c.draw_card(430, 560, 360, 200, bg=C_WHITE, border=C_AMBER_BORDER, border_w=2,
-                header_text="Zero-Trust Authz Engine", header_size=17, header_color=C_AMBER,
-                items=["• AuthorizationService (can)", "• ScopeResolver (Multi-Tenant)", "• AccessGrant Engine (Temporary)", "• Anti Self-Approval Security Guard", "• BOLA / IDOR Boundary Defense", "• Read-Only Role Claims Lock"],
-                item_size=15, line_spacing=26)
+                header_text="Keamanan & Otorisasi", header_size=17, header_color=C_AMBER,
+                items=[
+                    "• Pemeriksa Izin Akses (can)",
+                    "• Pembatas Wilayah Instansi",
+                    "• Izin Akses Tugas Khusus",
+                    "• Cegah Persetujuan Diri Sendiri",
+                    "• Proteksi Data Antar Instansi",
+                    "• Penguncian Hak Akses Resmi"
+                ], item_size=15, line_spacing=26)
 
     c.draw_card(805, 560, 365, 200, bg=C_WHITE, border=C_AMBER_BORDER, border_w=2,
-                header_text="Core Domain Services", header_size=17, header_color=C_AMBER,
-                items=["• SubmissionWorkflowService (FSM)", "• OrgHierarchyService (DFS Tree)", "• RevisionService (v1->v2 Snapshot)", "• ApprovalPromotionService (SK)", "• ExecutiveReportService (Funnel)", "• Separation of Duties Engine"],
-                item_size=15, line_spacing=26)
+                header_text="Layanan Bisnis Utama", header_size=17, header_color=C_AMBER,
+                items=[
+                    "• Mesin Alur Usulan (FSM)",
+                    "• Penyusun Struktur Pohon Organisasi",
+                    "• Perekam Versi Draf (v1->v2)",
+                    "• Mesin Pengesahan SK Resmi",
+                    "• Agregasi Laporan Nasional",
+                    "• Pemisahan Wewenang Kerja"
+                ], item_size=15, line_spacing=26)
 
     c.draw_card(1185, 560, 360, 200, bg=C_WHITE, border=C_AMBER_BORDER, border_w=2,
-                header_text="Audit & Forensics Engine", header_size=17, header_color=C_AMBER,
-                items=["• AuditService (Append-Only)", "• Payload Diffing Engine (JSON)", "• Actor NIP & Role Capture", "• Client IP & User Agent Tracker", "• Security Violation Interceptor", "• Binary CSV / JSON Export Stream"],
-                item_size=15, line_spacing=26)
+                header_text="Perekam Jejak Audit", header_size=17, header_color=C_AMBER,
+                items=[
+                    "• Pencatatan Mutasi Data",
+                    "• Pelacak Perubahan Data (Diff)",
+                    "• Perekam NIP & Peran Pengguna",
+                    "• Perekam Alamat IP & Browser",
+                    "• Pencegah Pelanggaran Akses",
+                    "• Ekspor Berkas Laporan CSV"
+                ], item_size=15, line_spacing=26)
 
-    # Arrow Tier 3 -> Tier 4
-    c.draw_arrow(800, 780, 800, 825, color=C_EMERALD, width=3, label="MySQL PDO Connection", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
+    # Panah Lapisan 2 -> Basis Data
+    c.draw_arrow(800, 780, 800, 825, color=C_EMERALD, width=3, label="Koneksi Aman Relasional MySQL", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    # Tier 4
-    c.draw_card(220, 825, 1160, 60, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=8,
-                header_text="TIER 3: DATA PERSISTENCE - MySQL 8.x (eskld_db - 21 Relational Tables)", header_size=18, header_color=C_EMERALD,
-                items=["Integritas Relasi FK  •  Snapshot Table Immutability  •  Zero-Trust User Scopes  •  Append-Only Audit Logs"],
+    # Lapisan 3 Basis Data
+    c.draw_card(220, 825, 1160, 60, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=8,
+                header_text="LAPISAN 3: PENYIMPANAN DATA UTAMA - MySQL 8.x (eskld_db - 21 Tabel Relasional)", header_size=17.5, header_color=C_EMERALD,
+                items=["Integritas Relasi Kunci  •  Immutabilitas Snapshot Versi  •  Isolasi Data Instansi  •  Log Audit Permanen Anti-Ubah"],
                 item_size=15, item_color=C_NAVY, line_spacing=0)
 
     c.save("system_architecture.png")
 
 # -------------------------------------------------------------
-# 2. ROLE & ACCESS MATRIX
+# 2. MATRIKS PERAN & HAK AKSES
 # -------------------------------------------------------------
 def render_role_access():
-    c = UltraCanvas(1600, 900)
-    c.draw_top_title("MODEL OTORISASI & MATRIKS HAK AKSES ZERO-TRUST", 
-                     "Pemisahan Wewenang (Separation of Duties) dan Batasan Hak Akses per Peran Pengguna")
+    c = ExecutiveCanvas(1600, 900)
+    c.draw_top_title("PEMBAGIAN PERAN & MATRIKS HAK AKSES PENGGUNA", 
+                     "Prinsip Pemisahan Wewenang Kerja (Separation of Duties) dan Batasan Hak Akses per Peran")
 
     roles = [
-        ("USER (Operator)", 40, 95, 360, 480, C_BLUE_LIGHT, C_BLUE, C_BLUE, [
-            ("• Lingkup: ", "Home Institution"),
-            ("• Tugas: ", "Draf Usulan Struktur Organisasi"),
-            ("• Drafting: ", "Menyusun unit & jabatan (v1)"),
-            ("• Pengajuan: ", "Submit ke Gate 1 Admin"),
-            ("• Perbaikan: ", "Memperbaiki berkas revisi (v2)"),
-            ("• Batasan: ", "DILARANG telaah & approve"),
-            ("• Keamanan: ", "403 Forbidden bila lintas instansi")
+        ("OPERATOR (Instansi Pengusul)", 40, 95, 360, 480, C_BLUE_LIGHT, C_BLUE, C_BLUE, [
+            ("• Lingkup Kerja: ", "Instansi Sendiri"),
+            ("• Tugas Pokok: ", "Menyusun usulan struktur baru"),
+            ("• Pembuatan Draf: ", "Input draf unit kerja & formasi (v1)"),
+            ("• Pengajuan: ", "Mengirim berkas ke KemenPANRB"),
+            ("• Perbaikan: ", "Memperbaiki berkas jika ada revisi (v2)"),
+            ("• Batasan Tegas: ", "TIDAK BISA menelaah / menyetujui"),
+            ("• Keamanan: ", "Ditolak sistem bila akses K/L lain")
         ]),
-        ("ADMIN (Penapis)", 425, 95, 360, 480, C_AMBER_LIGHT, C_AMBER, C_AMBER, [
-            ("• Lingkup: ", "Scoped / Assigned K/L/D"),
-            ("• Tugas: ", "Penapisan Administrasi Gate 1"),
-            ("• Screening: ", "Validasi kelengkapan & dasar hukum"),
-            ("• Revisi: ", "Mengembalikan revisi formal"),
-            ("• Penugasan: ", "Menugaskan Verifikator"),
-            ("• Batasan: ", "DILARANG Final Approval"),
-            ("• Batas Peran: ", "Hanya penapis formal, bukan penilai")
+        ("PENAPIS (Admin KemenPANRB)", 425, 95, 360, 480, C_AMBER_LIGHT, C_AMBER, C_AMBER, [
+            ("• Lingkup Kerja: ", "Berkas K/L yang Ditugaskan"),
+            ("• Tugas Pokok: ", "Penapisan Administratif (Tahap 1)"),
+            ("• Pemeriksaan: ", "Validasi kelengkapan berkas & hukum"),
+            ("• Pengembalian: ", "Kembalikan berkas bila belum lengkap"),
+            ("• Penugasan: ", "Menugaskan Verifikator yang sesuai"),
+            ("• Batasan Tegas: ", "TIDAK BISA mengesahkan SK final"),
+            ("• Batas Peran: ", "Hanya verifikasi formal, bukan substansi")
         ]),
-        ("VERIFIER (Verifikator)", 810, 95, 360, 480, C_EMERALD_LIGHT, C_EMERALD, C_EMERALD, [
-            ("• Lingkup: ", "Queue Berkas Ditugaskan"),
-            ("• Tugas: ", "Telaah Substantif Gate 2"),
-            ("• Analisis: ", "Evaluasi beban kerja & formasi"),
-            ("• Catatan: ", "Review notes per unit kerja"),
-            ("• Wewenang: ", "FINAL APPROVAL SK RESMI"),
-            ("• Promosi: ", "Eksekusi migrasi ke master data"),
-            ("• Tanggung Jawab: ", "Integritas yuridis & teknis SK")
+        ("VERIFIKATOR (Kelembagaan)", 810, 95, 360, 480, C_EMERALD_LIGHT, C_EMERALD, C_EMERALD, [
+            ("• Lingkup Kerja: ", "Antrean Usulan Penugasan"),
+            ("• Tugas Pokok: ", "Telaah Substantif (Tahap 2)"),
+            ("• Analisis: ", "Evaluasi beban kerja & formasi ASN"),
+            ("• Catatan Telaah: ", "Memberikan catatan telaah per unit"),
+            ("• Wewenang Mutlak: ", "PENGESAHAN SURAT KEPUTUSAN (SK)"),
+            ("• Promosi Data: ", "Migrasi usulan ke data master aktif"),
+            ("• Tanggung Jawab: ", "Keabsahan yuridis & teknis SK")
         ]),
-        ("SUPER_ADMIN / SESDEP", 1195, 95, 365, 480, C_PURPLE_LIGHT, C_PURPLE, C_PURPLE, [
-            ("• Lingkup: ", "Nasional Seluruh Indonesia"),
-            ("• Tugas: ", "Administrasi & Supervisi"),
-            ("• Akses: ", "Kelola akun & access grants"),
-            ("• Monitoring: ", "Dashboard status seluruh K/L"),
-            ("• Forensik: ", "Audit trail & payload diffing"),
-            ("• Ekspor: ", "Unduh dataset nasional"),
-            ("• Status: ", "SESDEP dinormalisasi ke SUPER_ADMIN")
+        ("PIMPINAN & SUPER ADMIN", 1195, 95, 365, 480, C_PURPLE_LIGHT, C_PURPLE, C_PURPLE, [
+            ("• Lingkup Kerja: ", "Nasional (Seluruh K/L/D)"),
+            ("• Tugas Pokok: ", "Supervisi, Monitoring & Pengawasan"),
+            ("• Kelola Akses: ", "Kelola akun pengguna & penugasan"),
+            ("• Pantauan: ", "Dashboard analitik capaian nasional"),
+            ("• Forensik Audit: ", "Pemeriksaan riwayat log & perubahan"),
+            ("• Ekspor Laporan: ", "Unduh data kelembagaan nasional"),
+            ("• Status SESDEP: ", "Hak akses setara SUPER_ADMIN")
         ])
     ]
 
     for title, x, y, w, h, bg, border, hbg, items in roles:
-        c.draw_card(x, y, w, h, bg=bg, border=border, border_w=2.5, radius=10,
-                    header_bg=hbg, header_text=title, header_size=18,
-                    items=items, item_size=16, line_spacing=34)
+        c.draw_card(x, y, w, h, bg=bg, border=border, border_w=3, radius=10,
+                    header_bg=hbg, header_text=title, header_size=17,
+                    items=items, item_size=15.5, line_spacing=34)
 
-    # Bottom Principles Card
-    c.draw_card(40, 595, 1520, 285, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="5 PRINSIP UTAMA KEAMANAN ZERO-TRUST & SEPARATION OF DUTIES", header_size=19,
+    c.draw_card(40, 595, 1520, 285, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="5 PRINSIP UTAMA TATA KELOLA & KEAMANAN AKSES SISTEM", header_size=18.5,
                 items=[
-                    ("1. Backend Single Source of Truth: ", "Frontend tidak mengambil keputusan otorisasi mandiri; CI4 AuthorizationService menjadi otoritas mutlak."),
-                    ("2. Strict Role Locking: ", "Persona switcher dinonaktifkan pada mode API produksi guna mencegah eskalasi hak akses ilegal."),
-                    ("3. Separation of Duties: ", "ADMIN berwenang Gate 1 (Penapisan/Penugasan); FINAL APPROVAL dan Promosi mutlak wewenang VERIFIER."),
-                    ("4. Anti Self-Approval Guard: ", "Sistem secara kriptografis memblokir pengguna agar tidak dapat menelaah atau menyetujui usulan buatannya sendiri."),
-                    ("5. BOLA / IDOR Scoping Guard: ", "Setiap kueri data instansi, struktur unit, dan usulan diverifikasi kepemilikannya terhadap user_scopes & access_grants.")
+                    ("1. Otoritas Backend Terpusat: ", "Keputusan hak akses ditentukan 100% oleh server backend, bukan oleh browser pengguna."),
+                    ("2. Penguncian Peran Ketat: ", "Pengguna tidak dapat mengubah peran sendiri di aplikasi untuk mencegah penyalahgunaan wewenang."),
+                    ("3. Pemisahan Tugas (Separation of Duties): ", "Admin hanya bertugas penapisan administrasi; hak pengesahan SK mutlak milik Verifikator."),
+                    ("4. Larangan Persetujuan Sendiri: ", "Sistem secara otomatis memblokir pengguna agar tidak dapat memeriksa atau menyetujui usulan buatannya sendiri."),
+                    ("5. Batasan Wilayah Instansi: ", "Operator hanya dapat melihat data instansinya sendiri dan diblokir jika mencoba mengakses instansi lain.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("role_access_matrix.png")
 
 # -------------------------------------------------------------
-# 3. SUBMISSION LIFECYCLE FSM
+# 3. SIKLUS HIDUP PENGUSULAN (FSM)
 # -------------------------------------------------------------
 def render_submission_lifecycle():
-    c = UltraCanvas(1600, 900)
-    c.draw_top_title("FINITE STATE MACHINE & SIKLUS HIDUP PENGUSULAN KELEMBAGAAN", 
-                     "7 Tahapan Status Usulan Penataan Organisasi dari Drafting hingga Promosi Master Data")
+    c = ExecutiveCanvas(1600, 900)
+    c.draw_top_title("ALUR TAHAPAN SIKLUS HIDUP USULAN KELEMBAGAAN", 
+                     "7 Tahapan Status Usulan Penataan Organisasi: Mulai dari Penyusunan Draf hingga Pengesahan & Promosi Data")
 
-    c.draw_card(40, 100, 340, 185, bg=C_SLATE_LIGHT, border=C_SLATE_MID, border_w=2.5, radius=10,
-                header_bg=C_SLATE_MID, header_text="1. DRAFT (Operator)", header_size=18,
-                items=["• Operator menyusun draf awal", "• Tambah unit & kuota formasi", "• Disimpan snapshot versi v1"],
+    c.draw_card(40, 100, 340, 185, bg=C_SLATE_LIGHT, border=C_SLATE_MID, border_w=3, radius=10,
+                header_bg=C_SLATE_MID, header_text="1. DRAF AWAL (Operator)", header_size=17.5,
+                items=["• Operator menyusun usulan struktur", "• Input unit kerja & kebutuhan formasi", "• Disimpan sebagai draf versi 1 (v1)"],
                 item_size=15.5, line_spacing=28)
 
-    c.draw_arrow(385, 190, 435, 190, color=C_BLUE, width=3, label="submit()", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
+    c.draw_arrow(385, 190, 435, 190, color=C_BLUE, width=3, label="Kirim Usulan", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
 
-    c.draw_card(435, 100, 340, 185, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=10,
-                header_bg=C_BLUE, header_text="2. SUBMITTED_TO_ADMIN", header_size=18,
-                items=["• Masuk antrean KemenPANRB", "• Admin memeriksa kelengkapan", "• Pengecekan dasar hukum & naskah"],
+    c.draw_card(435, 100, 340, 185, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
+                header_bg=C_BLUE, header_text="2. PENAPISAN (Admin PANRB)", header_size=17.5,
+                items=["• Berkas masuk ke antrean KemenPANRB", "• Pemeriksaan kelengkapan administrasi", "• Validasi surat pengantar & naskah"],
                 item_size=15.5, line_spacing=28)
 
-    c.draw_arrow(780, 190, 830, 190, color=C_AMBER, width=3, label="accept() & assign()", label_bg=C_AMBER_LIGHT, label_color=C_AMBER)
+    c.draw_arrow(780, 190, 830, 190, color=C_AMBER, width=3, label="Terima & Tugaskan", label_bg=C_AMBER_LIGHT, label_color=C_AMBER)
 
-    c.draw_card(830, 100, 340, 185, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2.5, radius=10,
-                header_bg=C_AMBER, header_text="3. ASSIGNED_TO_VERIFIER", header_size=18,
-                items=["• Penugasan Verifikator", "• Telaah beban kerja & eselon", "• Status IN_REVIEW_BY_VERIFIER"],
+    c.draw_card(830, 100, 340, 185, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=3, radius=10,
+                header_bg=C_AMBER, header_text="3. TELAAH (Verifikator)", header_size=17.5,
+                items=["• Berkas ditugaskan ke Verifikator", "• Evaluasi beban kerja & eselonisasi", "• Pemeriksaan keselarasan formasi ASN"],
                 item_size=15.5, line_spacing=28)
 
-    c.draw_arrow(1175, 190, 1225, 190, color=C_PURPLE, width=3, label="approveSubstantive()", label_bg=C_PURPLE_LIGHT, label_color=C_PURPLE)
+    c.draw_arrow(1175, 190, 1225, 190, color=C_PURPLE, width=3, label="Setujui Telaah", label_bg=C_PURPLE_LIGHT, label_color=C_PURPLE)
 
-    c.draw_card(1225, 100, 335, 185, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=2.5, radius=10,
-                header_bg=C_PURPLE, header_text="4. READY_FOR_DECISION", header_size=18,
-                items=["• Telaah teknis selesai", "• Catatan telaah terpenuhi", "• Berkas siap pengesahan"],
+    c.draw_card(1225, 100, 335, 185, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=3, radius=10,
+                header_bg=C_PURPLE, header_text="4. SIAP PENGESAHAN", header_size=17.5,
+                items=["• Hasil telaah substantif tuntas", "• Catatan perbaikan telah terpenuhi", "• Berkas siap untuk disahkan SK"],
                 item_size=15.5, line_spacing=28)
 
-    # Arrow to Final Approval
-    c.draw_arrow(1390, 290, 1390, 380, color=C_EMERALD, width=4, label="finalApprove(VERIFIER)", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
+    c.draw_arrow(1390, 290, 1390, 380, color=C_EMERALD, width=4, label="Sahkan SK Resmi", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    # Bottom Row
-    c.draw_card(1225, 380, 335, 185, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                header_bg=C_EMERALD, header_text="5. APPROVED (SK Resmi)", header_size=18,
-                items=["• SK resmi disahkan Verifikator", "• Nomor & tanggal penetapan SK", "• Rekam jejak approval_records"],
+    c.draw_card(1225, 380, 335, 185, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                header_bg=C_EMERALD, header_text="5. DISETUJUI (SK Terbit)", header_size=17.5,
+                items=["• SK resmi disahkan oleh Verifikator", "• Penetapan nomor & tanggal SK resmi", "• Bukti pengesahan tercatat permanen"],
                 item_size=15.5, line_spacing=28)
 
-    c.draw_arrow(1225, 470, 1175, 470, color=C_EMERALD, width=3, label="promote()", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
+    c.draw_arrow(1225, 470, 1175, 470, color=C_EMERALD, width=3, label="Promosikan Data", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    c.draw_card(830, 380, 340, 185, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                header_bg=C_EMERALD, header_text="6. PROMOTED (Master Data)", header_size=18,
-                items=["• Migrasi otomatis ke master aktif", "• Unit & jabatan live terupdate", "• Usulan ditutup dengan sukses"],
+    c.draw_card(830, 380, 340, 185, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                header_bg=C_EMERALD, header_text="6. DATA AKTIF (Promosi Selesai)", header_size=17.5,
+                items=["• Data otomatis masuk master instansi", "• Struktur unit & formasi live terupdate", "• Proses pengusulan selesai sukses"],
                 item_size=15.5, line_spacing=28)
 
-    c.draw_card(40, 380, 735, 185, bg=C_RED_LIGHT, border=C_RED, border_w=2.5, radius=10,
-                header_bg=C_RED, header_text="7. REVISION_REQUIRED (Siklus Perbaikan Berkas)", header_size=18,
+    c.draw_card(40, 380, 735, 185, bg=C_RED_LIGHT, border=C_RED, border_w=3, radius=10,
+                header_bg=C_RED, header_text="7. PERBAIKAN BERKAS (Siklus Revisi Dokumen)", header_size=17.5,
                 items=[
-                    ("• Pengembalian Admin: ", "Berkas dikembalikan jika tidak lengkap formal (returnAdmin)."),
-                    ("• Pengembalian Verifikator: ", "Berkas dikembalikan jika ada koreksi teknis (returnVerifier)."),
-                    ("• Resubmit & Versioning: ", "Operator memperbaiki berkas dan mengirimkan versi baru (v1 -> v2).")
+                    ("• Pengembalian oleh Admin: ", "Berkas dikembalikan jika dokumen belum lengkap."),
+                    ("• Pengembalian oleh Verifikator: ", "Berkas dikembalikan jika ada koreksi teknis substantif."),
+                    ("• Pengajuan Ulang (Resubmit): ", "Operator memperbaiki berkas lalu mengajukan versi baru (v1 -> v2).")
                 ], item_size=15.5, line_spacing=30)
 
-    # Revision Arrows
-    c.draw_arrow(605, 290, 605, 380, color=C_RED, width=3, label="returnAdmin()", label_bg=C_RED_LIGHT, label_color=C_RED)
-    c.draw_arrow(1000, 290, 780, 380, color=C_RED, width=3, label="returnVerifier()", label_bg=C_RED_LIGHT, label_color=C_RED)
-    c.draw_arrow(210, 380, 210, 290, color=C_SLATE_MID, width=3, label="resubmit() [v1 -> v2]", label_bg=C_SLATE_LIGHT, label_color=C_SLATE_DARK)
+    c.draw_arrow(605, 290, 605, 380, color=C_RED, width=3, label="Revisi Admin", label_bg=C_RED_LIGHT, label_color=C_RED)
+    c.draw_arrow(1000, 290, 780, 380, color=C_RED, width=3, label="Revisi Verifikator", label_bg=C_RED_LIGHT, label_color=C_RED)
+    c.draw_arrow(210, 380, 210, 290, color=C_SLATE_MID, width=3, label="Ajukan Ulang (v2)", label_bg=C_SLATE_LIGHT, label_color=C_SLATE_DARK)
 
-    # Summary Footer Card
-    c.draw_card(40, 590, 1520, 290, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="RINGKASAN ATURAN BISNIS FINITE STATE MACHINE (FSM)", header_size=19,
+    c.draw_card(40, 590, 1520, 290, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="RINGKASAN ATURAN KERJA ALUR PENGUSULAN", header_size=18.5,
                 items=[
-                    ("• Immutabilitas Riwayat: ", "Setiap perpindahan status dicatat permanen dalam tabel audit_logs dan history usulan."),
-                    ("• Final Approval Mandate: ", "Pengesahan Surat Keputusan (SK) dan eksekusi promosi data mutlak menjadi wewenang VERIFIER."),
-                    ("• Automatic Data Promotion: ", "Tidak ada intervensi manual; sistem memigrasikan perubahan unit dan jabatan dari tabel submission langsung ke tabel aktif."),
-                    ("• Resubmission Integrity: ", "Setiap pengajuan ulang setelah revisi secara otomatis menaikkan nomor versi usulan (v1 -> v2 -> v3).")
+                    ("• Rekam Jejak Permanen: ", "Setiap perpindahan tahapan dan status dicatat otomatis tanpa bisa dihapus untuk keperluan audit."),
+                    ("• Wewenang Pengesahan Akhir: ", "Penerbitan Surat Keputusan (SK) dan promosi ke master data mutlak wewenang VERIFIER."),
+                    ("• Otomasi Pembaruan Data: ", "Setelah SK disahkan, sistem otomatis memindahkan unit dan jabatan baru ke data aktif instansi."),
+                    ("• Pelacakan Riwayat Versi: ", "Setiap perbaikan berkas tersimpan dalam nomor versi baru (v1, v2, v3) agar perubahan mudah dibandingkan.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("submission_lifecycle_fsm.png")
@@ -347,390 +396,389 @@ def render_submission_lifecycle():
 # 4. DATABASE ERD
 # -------------------------------------------------------------
 def render_erd():
-    c = UltraCanvas(1600, 900)
-    c.draw_top_title("ENTITY RELATIONSHIP DIAGRAM (ERD) - eskld_db (21 TABEL)", 
-                     "Struktur Data Relasional Terintegrasi: Autentikasi, Master Data, Usulan & Versioning, Verifikasi & Audit")
+    c = ExecutiveCanvas(1600, 900)
+    c.draw_top_title("STRUKTUR DATABASE & ENTITY RELATIONSHIP DIAGRAM (ERD)", 
+                     "Struktur 21 Tabel Relasional eskld_db: Akun & Hak Akses, Master Data Kelembagaan, Usulan & Versioning, Serta Verifikasi & Audit")
 
-    c.draw_card(40, 95, 360, 480, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=10,
-                header_bg=C_BLUE, header_text="1. AUTH & ACCESS CONTROL", header_size=17,
+    c.draw_card(40, 95, 360, 480, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
+                header_bg=C_BLUE, header_text="1. AKUN & HAK AKSES PENGGUNA", header_size=16.5,
                 items=[
-                    ("• users: ", "id (PK), nip, email, pass_hash"),
-                    ("• roles: ", "id (PK), code, name"),
-                    ("• permissions: ", "id (PK), code, name"),
-                    ("• role_permissions: ", "role_id, perm_id"),
-                    ("• user_scopes: ", "id (PK), user_id, inst_id"),
-                    ("• access_grants: ", "id, user_id, inst_id, type"),
-                    ("• access_requests: ", "id, user_id, inst_id, stat")
-                ], item_size=15.5, line_spacing=34)
+                    ("• users: ", "Data akun, NIP, email, password"),
+                    ("• roles: ", "Daftar 4 peran resmi sistem"),
+                    ("• permissions: ", "Katalog hak akses terperinci"),
+                    ("• role_permissions: ", "Pemetaan hak akses per peran"),
+                    ("• user_scopes: ", "Batasan instansi per pengguna"),
+                    ("• access_grants: ", "Izin akses tugas khusus sementara"),
+                    ("• access_requests: ", "Permohonan akses instansi baru")
+                ], item_size=15, line_spacing=34)
 
-    c.draw_card(425, 95, 360, 480, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                header_bg=C_EMERALD, header_text="2. MASTER DATA KELEMBAGAAN", header_size=17,
+    c.draw_card(425, 95, 360, 480, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                header_bg=C_EMERALD, header_text="2. MASTER DATA KELEMBAGAAN", header_size=16.5,
                 items=[
-                    ("• institutions: ", "id (PK), code, name, cat"),
-                    ("• institution_types: ", "id (PK), code, name"),
-                    ("• cabinets: ", "id (PK), name, is_active"),
-                    ("• cabinet_institutions: ", "cab_id, inst_id"),
-                    ("• organizational_units: ", "id, inst_id, parent_id,"),
-                    ("  - unit_code, ", "unit_name, unit_level"),
-                    ("• positions: ", "id, unit_id, pos_name, echelon,"),
-                    ("  - formation_count, ", "status")
-                ], item_size=15.5, line_spacing=34)
+                    ("• institutions: ", "Master instansi K/L/Pemda"),
+                    ("• institution_types: ", "Kategori bentuk instansi"),
+                    ("• cabinets: ", "Data kabinet & periode presiden"),
+                    ("• cabinet_institutions: ", "Pemetaan K/L per kabinet"),
+                    ("• organizational_units: ", "Unit kerja aktif (Pohon Adjacency)"),
+                    ("  - level, nama, ", "kode unit, status aktif"),
+                    ("• positions: ", "Jabatan struktural & formasi ASN")
+                ], item_size=15, line_spacing=34)
 
-    c.draw_card(810, 95, 360, 480, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2.5, radius=10,
-                header_bg=C_AMBER, header_text="3. SUBMISSION & VERSIONING", header_size=17,
+    c.draw_card(810, 95, 360, 480, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=3, radius=10,
+                header_bg=C_AMBER, header_text="3. USULAN & VERSI DRAF", header_size=16.5,
                 items=[
-                    ("• submissions: ", "id (PK), inst_id, author_id,"),
-                    ("  - title, ", "submission_year, current_state"),
-                    ("• submission_versions: ", "id, sub_id,"),
-                    ("  - version_number, ", "notes, created_at"),
-                    ("• submission_units: ", "id, version_id, parent_id,"),
-                    ("  - unit_code, ", "unit_name, action_type"),
-                    ("• submission_positions: ", "id, version_id, unit_id,"),
-                    ("  - pos_name, ", "formation_count, action_type")
-                ], item_size=15.5, line_spacing=34)
+                    ("• submissions: ", "Header usulan & status alur"),
+                    ("  - instansi pengusul, ", "tahun, pembuat"),
+                    ("• submission_versions: ", "Riwayat versi draf (v1, v2, dll.)"),
+                    ("• submission_units: ", "Rincian usulan unit baru/ubah/hapus"),
+                    ("  - kode unit, ", "nama unit, jenis tindakan"),
+                    ("• submission_positions: ", "Rincian usulan formasi jabatan"),
+                    ("  - nama jabatan, ", "eselon, jumlah formasi")
+                ], item_size=15, line_spacing=34)
 
-    c.draw_card(1195, 95, 365, 480, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=2.5, radius=10,
-                header_bg=C_PURPLE, header_text="4. VERIFIKASI & AUDIT", header_size=17,
+    c.draw_card(1195, 95, 365, 480, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=3, radius=10,
+                header_bg=C_PURPLE, header_text="4. PENUGASAN, TELAAH & AUDIT", header_size=16.5,
                 items=[
-                    ("• verifier_assignments: ", "id, sub_id,"),
-                    ("  - verifier_id, ", "assigned_by_admin, status"),
-                    ("• verifier_review_notes: ", "id, sub_id,"),
-                    ("  - verifier_id, ", "section, note, resolved"),
-                    ("• approval_records: ", "id, version_id,"),
-                    ("  - approver_id, ", "approval_number, notes"),
-                    ("• audit_logs: ", "id (PK), actor_id, event,"),
-                    ("  - entity, ", "old_payload, new_payload, ip")
-                ], item_size=15.5, line_spacing=34)
+                    ("• verifier_assignments: ", "Alokasi berkas ke Verifikator"),
+                    ("• verifier_review_notes: ", "Catatan telaah teknis substantif"),
+                    ("  - unit target, ", "catatan koreksi, status selesai"),
+                    ("• approval_records: ", "Dokumen pengesahan SK resmi"),
+                    ("  - nomor SK, ", "tanggal pengesahan, pejabat"),
+                    ("• audit_logs: ", "Log rekam jejak mutasi data (permanen)"),
+                    ("  - data sebelum/sesudah, ", "IP, NIP pembuat")
+                ], item_size=15, line_spacing=34)
 
-    c.draw_card(40, 595, 1520, 285, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="KONSISTENSI RELASI KUNCI & INTEGRITAS DATA", header_size=19,
+    c.draw_card(40, 595, 1520, 285, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="PENJELASAN INTEGRITAS DATA & HUBUNGAN RELASIONAL", header_size=18.5,
                 items=[
-                    ("• Primary Key & Foreign Key Constraints: ", "Seluruh ID entitas menggunakan tipe integer terindeks dengan relasi constraint CASCADE/RESTRICT."),
-                    ("• Adjacency List Tree Model: ", "Tabel organizational_units menerapkan relasi mandiri parent_id dengan pencegahan loop siklus via DFS."),
-                    ("• Snapshot Immutability: ", "Tabel submission_versions, submission_units, dan submission_positions mengunci data draf historis secara permanen."),
-                    ("• Zero-Trust Scope Binding: ", "Tabel user_scopes dan access_grants mengisolasi hak akses data instansi secara multi-tenant."),
-                    ("• Forensik Mutlak: ", "Tabel audit_logs bersifat append-only tanpa izin UPDATE/DELETE guna menjamin keaslian bukti kepatuhan.")
+                    ("• Relasi Kunci Induk-Anak: ", "Seluruh data terhubung dengan kunci relasi (Foreign Key) yang menjamin tidak ada data yatim/rusak."),
+                    ("• Struktur Pohon Anti-Melingkar: ", "Unit kerja terstruktur dari Level 1 (Pimpinan) ke Level 4 dengan algoritma pencegah hubungan melingkar."),
+                    ("• Keamanan Versi Usulan: ", "Draf usulan yang telah diajukan dikunci permanen agar memiliki bukti historis yang tidak dapat diubah."),
+                    ("• Isolasi Data Multi-Instansi: ", "Tabel batasan wilayah memastikan operator hanya dapat mengelola data instansinya sendiri secara aman."),
+                    ("• Forensik Audit Lengkap: ", "Tabel log audit mencatat setiap perubahan data secara transparan untuk pengawasan pimpinan.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("erd_diagram.png")
 
 # -------------------------------------------------------------
-# 5. VERSIONING & DIFF FLOW
+# 5. PELACAKAN PERUBAHAN & VERSIONING (DIFF)
 # -------------------------------------------------------------
 def render_versioning_diff():
-    c = UltraCanvas(1600, 900)
-    c.draw_top_title("MEKANISME SNAPSHOT VERSIONING & PELACAKAN PERUBAHAN (DIFF)", 
-                     "Penguncian Versi Usulan Historis dan Komparasi Visual Perubahan Unit/Jabatan Organisasi")
+    c = ExecutiveCanvas(1600, 900)
+    c.draw_top_title("MEKANISME PEREKAMAN VERSI & PELACAKAN PERUBAHAN (DIFF)", 
+                     "Penguncian Draf Historis dan Komparasi Visual Perubahan Struktur Unit Kerja / Formasi Jabatan")
 
-    c.draw_card(40, 100, 470, 420, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=10,
-                header_bg=C_BLUE, header_text="Versi Usulan 1 (v1) - Draf Awal", header_size=18,
+    c.draw_card(40, 100, 470, 420, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
+                header_bg=C_BLUE, header_text="Versi Usulan 1 (v1) - Draf Awal", header_size=17.5,
                 items=[
-                    ("• Entitas: ", "submission_versions (v1)"),
-                    ("• Snapshot Unit: ", "Daftar unit usulan awal"),
-                    ("• Snapshot Jabatan: ", "Daftar formasi jabatan awal"),
-                    ("• Pengiriman: ", "Diajukan ke Gate 1 Admin"),
-                    ("• Status: ", "SUBMITTED_TO_ADMIN"),
-                    ("• Immutabilitas: ", "Data dikunci permanen saat submit")
-                ], item_size=16, line_spacing=36)
+                    ("• Nomor Versi: ", "Versi Draf 1 (v1)"),
+                    ("• Isi Usulan: ", "Rancangan unit kerja & formasi awal"),
+                    ("• Pengajuan: ", "Dikirim ke Penapis KemenPANRB"),
+                    ("• Status Berkas: ", "DALAM PENAPISAN ADMINISTRASI"),
+                    ("• Penguncian Data: ", "Data dikunci permanen saat dikirim"),
+                    ("• Bukti Historis: ", "Tersimpan sebagai arsip awal usulan")
+                ], item_size=15.5, line_spacing=36)
 
-    c.draw_arrow(515, 310, 565, 310, color=C_RED, width=3, label="returnRevision()", label_bg=C_RED_LIGHT, label_color=C_RED)
+    c.draw_arrow(515, 310, 565, 310, color=C_RED, width=3, label="Kembalikan Revisi", label_bg=C_RED_LIGHT, label_color=C_RED)
 
-    c.draw_card(565, 100, 470, 420, bg=C_RED_LIGHT, border=C_RED, border_w=2.5, radius=10,
-                header_bg=C_RED, header_text="Catatan Review & Koreksi Berkas", header_size=18,
+    c.draw_card(565, 100, 470, 420, bg=C_RED_LIGHT, border=C_RED, border_w=3, radius=10,
+                header_bg=C_RED, header_text="Catatan Telaah & Koreksi Berkas", header_size=17.5,
                 items=[
-                    ("• Entitas Catatan: ", "verifier_review_notes"),
-                    ("• Asal Catatan: ", "Admin / Verifikator Kelembagaan"),
-                    ("• Rincian Koreksi: ", "Koreksi tupoksi, rasio formasi"),
-                    ("• Status Berkas: ", "REVISION_REQUIRED"),
-                    ("• Akses Operator: ", "Formulir koreksi terbuka"),
-                    ("• Status v1: ", "Tersimpan arsip historis permanen")
-                ], item_size=16, line_spacing=36)
+                    ("• Asal Catatan: ", "Admin Penapis / Verifikator Kelembagaan"),
+                    ("• Poin Koreksi: ", "Koreksi tupoksi, rasio beban kerja ASN"),
+                    ("• Status Berkas: ", "PERLU PERBAIKAN (REVISION_REQUIRED)"),
+                    ("• Akses Operator: ", "Formulir koreksi terbuka untuk diperbaiki"),
+                    ("• Status Versi 1: ", "Tersimpan rapi dan tidak akan hilang"),
+                    ("• Waktu Respons: ", "Target perbaikan sesuai tenggat instansi")
+                ], item_size=15.5, line_spacing=36)
 
-    c.draw_arrow(1040, 310, 1090, 310, color=C_EMERALD, width=3, label="resubmit() [v2]", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
+    c.draw_arrow(1040, 310, 1090, 310, color=C_EMERALD, width=3, label="Ajukan Ulang (v2)", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    c.draw_card(1090, 100, 470, 420, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                header_bg=C_EMERALD, header_text="Versi Usulan 2 (v2) - Hasil Revisi", header_size=18,
+    c.draw_card(1090, 100, 470, 420, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                header_bg=C_EMERALD, header_text="Versi Usulan 2 (v2) - Hasil Perbaikan", header_size=17.5,
                 items=[
-                    ("• Entitas Baru: ", "submission_versions (v2)"),
-                    ("• Snapshot Baru: ", "Unit & formasi yang diperbaiki"),
-                    ("• Otomasi Diff: ", "Mesin membandingkan v2 vs Master"),
-                    ("• Status Usulan: ", "RESUBMITTED -> Gate 2"),
-                    ("• Pengesahan: ", "Versi v2 siap disahkan SK"),
-                    ("• Penomoran SK: ", "SK diterbitkan mengacu pada v2")
-                ], item_size=16, line_spacing=36)
+                    ("• Nomor Versi Baru: ", "Versi Draf 2 (v2)"),
+                    ("• Isi Perbaikan: ", "Unit & formasi yang telah disesuaikan"),
+                    ("• Pelacak Perubahan: ", "Sistem membandingkan v2 vs data aktif"),
+                    ("• Status Berkas: ", "DALAM TELAAH AKHIR VERIFIKATOR"),
+                    ("• Kesiapan SK: ", "Versi v2 siap disahkan menjadi SK resmi"),
+                    ("• Dasar Hukum SK: ", "Nomor SK diterbitkan mengacu versi v2")
+                ], item_size=15.5, line_spacing=36)
 
-    c.draw_card(40, 540, 1520, 340, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="LOGIKA KOMPARASI DATA PERUBAHAN (DIFF ENGINE & VIEWER)", header_size=19,
+    c.draw_card(40, 540, 1520, 340, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="PENJELASAN FITUR KOMPARASI PERUBAHAN DATA (DIFF VIEWER)", header_size=18.5,
                 items=[
-                    ("• Penambahan Unit (CREATE / HIJAU): ", "Menyoroti unit kerja baru yang belum ada di master data aktif instansi."),
-                    ("• Perubahan Formasi (UPDATE / KUNING): ", "Menampilkan pergeseran nomenklatur, level eselon, atau penambahan kuota formasi ASN."),
-                    ("• Penghapusan Unit (DELETE / MERAH): ", "Menandai unit struktural yang diusulkan untuk dilebur atau dihapus dari susunan organisasi."),
-                    ("• Komparasi Granular per Baris: ", "Verifikator dapat membandingkan data usulan baru berdampingan (Side-by-Side) dengan struktur organisasi aktif."),
-                    ("• Efisiensi Telaah SK: ", "Mempercepat proses verifikasi karena Verifikator fokus pada baris perubahan tanpa perlu membaca ulang seluruh SK.")
+                    ("• Penambahan Unit (Warna HIJAU): ", "Menyoroti pembentukan unit kerja baru yang belum ada pada struktur aktif instansi."),
+                    ("• Perubahan Formasi (Warna KUNING): ", "Menyoroti pergeseran nama unit, jenjang eselon, atau penambahan/pengurangan kuota formasi ASN."),
+                    ("• Penghapusan Unit (Warna MERAH): ", "Menandai unit struktural yang diusulkan untuk dihapus atau digabungkan ke unit lain."),
+                    ("• Tampilan Berdampingan (Side-by-Side): ", "Pimpinan dan Verifikator dapat membandingkan struktur lama dan usulan baru secara langsung."),
+                    ("• Efisiensi Pengambilan Keputusan: ", "Mempercepat telaah karena pimpinan langsung fokus pada poin perubahan tanpa harus membaca berkas tebal.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("versioning_diff_flow.png")
 
 # -------------------------------------------------------------
-# 6. SITEMAP & NAVIGATION
+# 6. SITEMAP & NAVIGASI APLIKASI
 # -------------------------------------------------------------
 def render_sitemap():
-    c = UltraCanvas(1600, 900)
+    c = ExecutiveCanvas(1600, 900)
     c.draw_top_title("SITEMAP DAN STRUKTUR NAVIGASI APLIKASI SIGMA-K", 
-                     "Pohon Rute Antarmuka 16 Halaman Terintegrasi Berdasarkan Next.js App Router")
+                     "Peta 16 Halaman Terintegrasi: Pengelompokan Berdasarkan Kebutuhan Layanan dan Hak Akses Pengguna")
 
-    c.draw_card(600, 100, 400, 55, bg=C_NAVY, border=C_NAVY, border_w=2, radius=8,
-                header_text="ROOT ENTRY: /login (Layar Masuk)", header_size=18, header_color=C_WHITE)
+    # Pintu Masuk
+    c.draw_card(550, 95, 500, 60, bg=C_NAVY, border=C_NAVY, border_w=2, radius=8,
+                header_text="PINTU MASUK: /login (Layar Masuk Sistem)", header_size=18, header_color=C_WHITE)
 
-    c.draw_card(550, 180, 500, 60, bg=C_BLUE, border=C_BLUE, border_w=2, radius=8,
-                header_text="APP SHELL: TopBar & Sidebar (Role Context)", header_size=18, header_color=C_WHITE)
+    # Kerangka Aplikasi
+    c.draw_card(500, 175, 600, 65, bg=C_BLUE, border=C_BLUE, border_w=2, radius=8,
+                header_text="KERANGKA APLIKASI (Menu Samping & Status Sesi Aktif)", header_size=18, header_color=C_WHITE)
 
-    c.draw_arrow(800, 155, 800, 180, color=C_NAVY, width=3)
+    c.draw_arrow(800, 155, 800, 175, color=C_NAVY, width=3)
 
     routes = [
         ("1. DASHBOARD", 40, 260, 285, 330, C_BLUE_LIGHT, C_BLUE, [
-            ("• /: ", "Overview"),
-            ("• /analytics: ", "Intelijensi"),
-            ("• Postur: ", "Distribusi Eselon"),
-            ("• Ekspor: ", "CSV/JSON Center")
+            ("• /: ", "Ringkasan Pimpinan"),
+            ("• /analytics: ", "Analitik Data"),
+            ("• Postur ASN: ", "Distribusi Eselon"),
+            ("• Ekspor: ", "Unduh CSV/JSON")
         ]),
         ("2. MASTER DATA", 350, 260, 285, 330, C_EMERALD_LIGHT, C_EMERALD, [
-            ("• /institutions: ", "Katalog"),
+            ("• /institutions: ", "Katalog K/L/D"),
             ("• .../[id]: ", "Profil Instansi"),
-            ("• /structure: ", "React Flow"),
+            ("• /structure: ", "Bagan Pohon"),
             ("• /cabinets: ", "Kabinet"),
             ("• /tupoksi: ", "Tupoksi Unit")
         ]),
         ("3. PENGUSULAN", 660, 260, 285, 330, C_AMBER_LIGHT, C_AMBER, [
-            ("• /submissions: ", "Daftar"),
-            ("• .../new: ", "Form Baru"),
+            ("• /submissions: ", "Daftar Usulan"),
+            ("• .../new: ", "Form Usulan Baru"),
             ("• .../[id]: ", "Rincian & Diff"),
             ("• .../revision: ", "Perbaikan v2")
         ]),
         ("4. VERIFIKASI", 970, 260, 285, 330, C_PURPLE_LIGHT, C_PURPLE, [
-            ("• /verifications: ", "Antrean"),
-            ("• Gate 1: ", "Screening Admin"),
-            ("• Gate 2: ", "Workspace Verifier"),
-            ("• .../[id]: ", "Review & SK")
+            ("• /verifications: ", "Antrean Berkas"),
+            ("• Tahap 1: ", "Penapis Admin"),
+            ("• Tahap 2: ", "Verifikator"),
+            ("• .../[id]: ", "Telaah & SK")
         ]),
         ("5. AUDIT & NOTIF", 1280, 260, 280, 330, C_SLATE_LIGHT, C_SLATE_MID, [
             ("• /audit-logs: ", "Log Forensik"),
-            ("• Diff Modal: ", "Inspeksi JSON"),
-            ("• /notifications: ", "Notifikasi"),
-            ("• Profil User: ", "Sesi & Hak Akses")
+            ("• Modal Diff: ", "Inspeksi Data"),
+            ("• /notifications: ", "Pemberitahuan"),
+            ("• Profil Akun: ", "Sesi Pengguna")
         ])
     ]
 
     for title, x, y, w, h, bg, border, items in routes:
-        c.draw_card(x, y, w, h, bg=bg, border=border, border_w=2.5, radius=10,
-                    header_bg=border, header_text=title, header_size=17,
+        c.draw_card(x, y, w, h, bg=bg, border=border, border_w=3, radius=10,
+                    header_bg=border, header_text=title, header_size=16.5,
                     items=items, item_size=15.5, line_spacing=32)
         c.draw_arrow(800, 240, x + w/2, y, color=C_SLATE_MID, width=2)
 
-    c.draw_card(40, 610, 1520, 270, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="INFORMASI IMPLEMENTASI DAN VALIDASI ROUTING", header_size=19,
+    c.draw_card(40, 610, 1520, 270, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="PENJELASAN PENGATURAN NAVIGASI & KEMUDAHAN PENGGUNA", header_size=18.5,
                 items=[
-                    ("• Kerangka Kerja Modern: ", "Seluruh rute dikembangkan menggunakan Next.js 14 App Router dengan dukungan Server-Side Rendering & Client Components."),
-                    ("• Otorisasi Antarmuka: ", "Visibilitas menu dan tombol aksi dikendalikan secara dinamis oleh RoleContext berdasarkan klaim JWT sesi aktif."),
-                    ("• Kompilasi 100% Bersih: ", "Sebanyak 16 rute statis dan dinamis telah terkompilasi sukses tanpa error pada tahap build produksi.")
+                    ("• Struktur Teratur & Terpadu: ", "Seluruh halaman dikelompokkan secara logis sehingga pengguna mudah menemukan menu yang dibutuhkan."),
+                    ("• Penyesuaian Menu Otomatis: ", "Menu yang tampil pada layar disesuaikan otomatis dengan hak akses masing-masing pengguna."),
+                    ("• Kesiapan Sistem 100%: ", "Sebanyak 16 rute halaman telah siap operasional dan teruji bebas kesalahan kompilasi.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("sitemap_diagram.png")
 
 # -------------------------------------------------------------
-# 7. GATE 1 & GATE 2 FLOWCHARTS
+# 7. DIAGRAM ALIR PENAPISAN (GATE 1) & TELAAH (GATE 2)
 # -------------------------------------------------------------
 def render_gate_flowcharts():
     # Gate 1
-    c1 = UltraCanvas(1600, 900)
-    c1.draw_top_title("ALUR KERJA PENAPISAN ADMINISTRATIF (GATE 1 ADMIN SCREENING)",
-                      "Verifikasi Kelengkapan Dokumen, Dasar Hukum, dan Alokasi Penugasan Verifikator")
+    c1 = ExecutiveCanvas(1600, 900)
+    c1.draw_top_title("ALUR PENAPISAN ADMINISTRATIF (GATE 1 ADMIN PANRB)",
+                      "Pemeriksaan Kelengkapan Surat Permohonan, Dasar Hukum, dan Alokasi Penugasan Verifikator")
 
-    c1.draw_card(550, 100, 500, 80, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=8,
-                 header_bg=C_BLUE, header_text="Pengajuan Usulan Masuk (SUBMITTED_TO_ADMIN)", header_size=17,
-                 items=["Berkas usulan diterima sistem dan masuk antrean Admin KemenPANRB."], item_size=15)
+    c1.draw_card(550, 100, 500, 80, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2, radius=8,
+                 header_bg=C_BLUE, header_text="Usulan Baru Masuk dari Instansi Pengusul", header_size=17,
+                 items=["Berkas usulan masuk ke antrean kerja Penapis KemenPANRB."], item_size=15)
 
     c1.draw_arrow(800, 180, 800, 240, color=C_NAVY, width=3)
 
-    c1.draw_card(380, 240, 840, 125, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2.5, radius=10,
-                 header_bg=C_AMBER, header_text="Pemeriksaan Kelengkapan Administratif & Dasar Hukum", header_size=18,
+    c1.draw_card(380, 240, 840, 125, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=3, radius=10,
+                 header_bg=C_AMBER, header_text="Pemeriksaan Kelengkapan Formal Dokumen & Dasar Hukum", header_size=17.5,
                  items=[
-                     "• Validasi kelengkapan surat pengantar Menteri/Kepala Lembaga",
+                     "• Validasi kelengkapan surat pengantar Menteri / Kepala Lembaga",
                      "• Pemeriksaan lampiran naskah akademik & draf regulasi pembentukan"
                  ], item_size=15.5, line_spacing=28)
 
     c1.draw_arrow(520, 365, 290, 440, color=C_RED, width=3, label="Berkas Tidak Lengkap / Tidak Sesuai", label_bg=C_RED_LIGHT, label_color=C_RED)
     c1.draw_arrow(1080, 365, 1310, 440, color=C_EMERALD, width=3, label="Berkas Lengkap & Memenuhi Syarat", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    c1.draw_card(40, 440, 560, 220, bg=C_RED_LIGHT, border=C_RED, border_w=2.5, radius=10,
-                 header_bg=C_RED, header_text="PENGEMBALIAN REVISI (returnRevision)", header_size=17,
+    c1.draw_card(40, 440, 560, 220, bg=C_RED_LIGHT, border=C_RED, border_w=3, radius=10,
+                 header_bg=C_RED, header_text="PENGEMBALIAN REVISI ADMINISTRATIF", header_size=17,
                  items=[
-                     ("• Aksi: ", "Admin mengeksekusi returnRevision()"),
-                     ("• Status: ", "Transisi status ke REVISION_REQUIRED"),
-                     ("• Catatan: ", "Admin menginputkan alasan kekurangan berkas"),
-                     ("• Dampak: ", "Operator menerima notifikasi & form perbaikan")
+                     ("• Tindakan: ", "Admin mengklik tombol kembalikan berkas"),
+                     ("• Status Berkas: ", "Berubah menjadi PERLU REVISI"),
+                     ("• Catatan: ", "Admin mencantumkan dokumen yang kurang"),
+                     ("• Notifikasi: ", "Operator menerima pemberitahuan perbaikan")
                  ], item_size=15.5, line_spacing=28)
 
-    c1.draw_card(1000, 440, 560, 220, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                 header_bg=C_EMERALD, header_text="PENERIMAAN & PENUGASAN (assignVerifier)", header_size=17,
+    c1.draw_card(1000, 440, 560, 220, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                 header_bg=C_EMERALD, header_text="PENERIMAAN & PENUGASAN VERIFIKATOR", header_size=17,
                  items=[
-                     ("• Aksi: ", "Admin mengeksekusi accept() & assignVerifier()"),
-                     ("• Status: ", "Transisi status ke ASSIGNED_TO_VERIFIER"),
-                     ("• Alokasi: ", "Menugaskan Pejabat Verifikator yang kompeten"),
+                     ("• Tindakan: ", "Admin menerima berkas & memilih Verifikator"),
+                     ("• Status Berkas: ", "Berubah menjadi DITUGASKAN KE VERIFIKATOR"),
+                     ("• Alokasi: ", "Menugaskan Pejabat Analis yang berkompeten"),
                      ("• Dampak: ", "Berkas masuk ke Ruang Kerja Verifikator")
                  ], item_size=15.5, line_spacing=28)
 
-    c1.draw_card(40, 680, 1520, 200, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                 header_bg=C_NAVY, header_text="BATASAN WEWENANG & PEMISAHAN TUGAS (SEPARATION OF DUTIES)", header_size=19,
+    c1.draw_card(40, 680, 1520, 200, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                 header_bg=C_NAVY, header_text="BATASAN WEWENANG PENAPIS ADMIN (SEPARATION OF DUTIES)", header_size=18.5,
                  items=[
-                     ("• Larangan Persetujuan Substantif: ", "Admin KemenPANRB secara tegas DILARANG melakukan persetujuan substantif maupun pengesahan SK."),
-                     ("• Batasan Peran: ", "Wewenang Admin dibatasi strictly pada verifikasi formalitas dokumen dan manajemen alokasi penugasan kerja Verifikator.")
+                     ("• Fokus Tugas Penapis: ", "Admin KemenPANRB bertugas memverifikasi kelengkapan formalitas surat dan naskah dokumen."),
+                     ("• Batasan Tegas: ", "Admin DILARANG melakukan persetujuan substantif maupun menandatangani pengesahan SK resmi.")
                  ], item_size=15.5, line_spacing=32)
 
     c1.save("gate1_admin_flowchart.png")
 
     # Gate 2
-    c2 = UltraCanvas(1600, 900)
-    c2.draw_top_title("ALUR KERJA TELAAH SUBSTANTIF & PENGESAHAN SK (GATE 2 VERIFIER)",
-                      "Analisis Beban Kerja, Evaluasi Formasi Jabatan ASN, dan Pengesahan Final Surat Keputusan")
+    c2 = ExecutiveCanvas(1600, 900)
+    c2.draw_top_title("ALUR TELAAH SUBSTANTIF & PENGESAHAN SK (GATE 2 VERIFIKATOR)",
+                      "Evaluasi Beban Kerja Organisasi, Analisis Formasi Jabatan ASN, dan Pengesahan Surat Keputusan (SK)")
 
-    c2.draw_card(550, 100, 500, 80, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2.5, radius=8,
-                 header_bg=C_AMBER, header_text="Menerima Penugasan (ASSIGNED_TO_VERIFIER)", header_size=17,
-                 items=["Verifikator membuka berkas usulan di Ruang Kerja Telaah Kelembagaan."], item_size=15)
+    c2.draw_card(550, 100, 500, 80, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2, radius=8,
+                 header_bg=C_AMBER, header_text="Menerima Penugasan Telaah Kelembagaan", header_size=17,
+                 items=["Verifikator membuka berkas usulan di Ruang Kerja Telaah."], item_size=15)
 
     c2.draw_arrow(800, 180, 800, 240, color=C_NAVY, width=3)
 
-    c2.draw_card(380, 240, 840, 125, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=2.5, radius=10,
-                 header_bg=C_PURPLE, header_text="Telaah Substantif Organisasi & Beban Kerja", header_size=18,
+    c2.draw_card(380, 240, 840, 125, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=3, radius=10,
+                 header_bg=C_PURPLE, header_text="Telaah Substantif Kelembagaan & Analisis Beban Kerja", header_size=17.5,
                  items=[
-                     "• Evaluasi kesesuaian rentang kendali (span of control) & eselonisasi",
-                     "• Analisis kuota formasi jabatan ASN & keselarasan tugas pokok fungsi (tupoksi)"
+                     "• Evaluasi rentang kendali struktur (span of control) & eselonisasi",
+                     "• Analisis kuota formasi jabatan ASN & keselarasan tugas pokok dan fungsi"
                  ], item_size=15.5, line_spacing=28)
 
     c2.draw_arrow(520, 365, 290, 440, color=C_RED, width=3, label="Ditemukan Catatan Substantif", label_bg=C_RED_LIGHT, label_color=C_RED)
     c2.draw_arrow(1080, 365, 1310, 440, color=C_EMERALD, width=3, label="Telaah Substantif Disetujui Penuh", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    c2.draw_card(40, 440, 560, 220, bg=C_RED_LIGHT, border=C_RED, border_w=2.5, radius=10,
-                 header_bg=C_RED, header_text="REVISI SUBSTANTIF (returnRevision)", header_size=17,
+    c2.draw_card(40, 440, 560, 220, bg=C_RED_LIGHT, border=C_RED, border_w=3, radius=10,
+                 header_bg=C_RED, header_text="PENGEMBALIAN REVISI SUBSTANTIF", header_size=17,
                  items=[
-                     ("• Aksi: ", "Verifikator menginput catatan teknis per unit"),
-                     ("• Status: ", "Transisi ke REVISION_REQUIRED_BY_VERIFIER"),
-                     ("• Pelacakan: ", "Tersimpan pada tabel verifier_review_notes"),
-                     ("• Resubmit: ", "Operator memperbaiki usulan dan mengajukan v2")
+                     ("• Tindakan: ", "Verifikator mengisi catatan telaah teknis"),
+                     ("• Status Berkas: ", "Berubah menjadi REVISI DARI VERIFIKATOR"),
+                     ("• Pelacakan: ", "Tersimpan rinci pada catatan review per unit"),
+                     ("• Perbaikan: ", "Operator memperbaiki usulan lalu kirim versi 2")
                  ], item_size=15.5, line_spacing=28)
 
-    c2.draw_card(1000, 440, 560, 220, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                 header_bg=C_EMERALD, header_text="PENGESAHAN SK & PROMOSI MASTER DATA", header_size=17,
+    c2.draw_card(1000, 440, 560, 220, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                 header_bg=C_EMERALD, header_text="PENGESAHAN SK RESMI & PROMOSI DATA", header_size=17,
                  items=[
-                     ("• Wewenang Final: ", "Verifikator mengeksekusi finalApprove()"),
-                     ("• Penerbitan SK: ", "Status transisi APPROVED & terbit Nomor SK resmi"),
-                     ("• Promosi Otomatis: ", "Eksekusi promote() memigrasikan data ke master"),
-                     ("• Status Akhir: ", "Usulan berstatus PROMOTED & data live aktif")
+                     ("• Wewenang Pengesahan: ", "Verifikator mengklik tombol Sahkan SK"),
+                     ("• Penerbitan SK: ", "Status DISETUJUI & terbit nomor SK resmi"),
+                     ("• Promosi Otomatis: ", "Data unit & jabatan masuk ke data master"),
+                     ("• Hasil Akhir: ", "Usulan selesai sukses & struktur aktif live")
                  ], item_size=15.5, line_spacing=28)
 
-    c2.draw_card(40, 680, 1520, 200, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                 header_bg=C_NAVY, header_text="FINAL APPROVAL AUTHORITY & OTOMASI PROMOSI DATA", header_size=19,
+    c2.draw_card(40, 680, 1520, 200, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                 header_bg=C_NAVY, header_text="WEWENANG MUTLAK PENGESAHAN SK & OTOMASI DATA", header_size=18.5,
                  items=[
-                     ("• Otoritas Pengesahan Akhir: ", "Verifikator memegang hak wewenang tunggal untuk menandatangani Surat Keputusan persetujuan organisasi."),
-                     ("• Tanpa Intervensi Manual: ", "Setelah SK disahkan, sistem secara otomatis mengeksekusi mutasi unit dan jabatan ke master data aktif.")
+                     ("• Otoritas Pengesahan Akhir: ", "Verifikator memegang hak wewenang tunggal untuk menandatangani persetujuan Surat Keputusan."),
+                     ("• Pembaruan Otomatis: ", "Setelah SK disahkan, sistem otomatis memutasi unit dan jabatan ke data master aktif tanpa intervensi manual.")
                  ], item_size=15.5, line_spacing=32)
 
     c2.save("gate2_verifier_flowchart.png")
 
 # -------------------------------------------------------------
-# 8. MASTER DATA FLOW & ORG HIERARCHY TREE
+# 8. MASTER DATA FLOW & POHON ORGANISASI
 # -------------------------------------------------------------
 def render_master_data_hierarchy():
     # Master Data Flow
-    c1 = UltraCanvas(1600, 900)
-    c1.draw_top_title("ALUR KETERHUBUNGAN MASTER DATA KELEMBAGAAN",
-                      "Hubungan Relasional Antara Instansi, Komposisi Kabinet, Pohon Unit Kerja, Formasi Jabatan, dan Tupoksi")
+    c1 = ExecutiveCanvas(1600, 900)
+    c1.draw_top_title("KETERHUBUNGAN MASTER DATA KELEMBAGAAN",
+                      "Hubungan Antara Data Instansi, Komposisi Kabinet, Pohon Unit Kerja, Formasi Jabatan, dan Tupoksi")
 
-    c1.draw_card(40, 100, 470, 430, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=10,
-                 header_bg=C_BLUE, header_text="1. Instansi & Kabinet", header_size=18,
+    c1.draw_card(40, 100, 470, 430, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
+                 header_bg=C_BLUE, header_text="1. Instansi & Kabinet Pemerintahan", header_size=17.5,
                  items=[
-                     ("• Master Instansi: ", "Kementerian, LPNK, Pemda"),
-                     ("• Klasifikasi Bentuk: ", "KEMENKO, KEMENTERIAN, LPNK"),
-                     ("• Komposisi Kabinet: ", "Kabinet Merah Putih"),
-                     ("• Koordinasi Kemenko: ", "Instansi di bawah Menko terkait")
-                 ], item_size=16, line_spacing=36)
+                     ("• Master Instansi: ", "Kementerian, LPNK, Lembaga & Pemda"),
+                     ("• Kategori Bentuk: ", "Kemenko, Kementerian, LPNK, dll."),
+                     ("• Komposisi Kabinet: ", "Pemetaan ke Kabinet Merah Putih"),
+                     ("• Koordinasi Kemenko: ", "Instansi teknis di bawah Menko terkait")
+                 ], item_size=15.5, line_spacing=36)
 
     c1.draw_arrow(515, 315, 565, 315, color=C_BLUE, width=3)
 
-    c1.draw_card(565, 100, 470, 430, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                 header_bg=C_EMERALD, header_text="2. Unit Kerja Struktural", header_size=18,
+    c1.draw_card(565, 100, 470, 430, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                 header_bg=C_EMERALD, header_text="2. Unit Kerja Struktural (Pohon Berjenjang)", header_size=17.5,
                  items=[
-                     ("• Model Data: ", "Adjacency List (parent_id)"),
-                     ("• Level Kedudukan: ", "Level 1 s.d. Level 4"),
-                     ("• Validasi Anti-Siklus: ", "DFS mencegah referensi melingkar"),
-                     ("• Status Unit: ", "Unit berstatus AKTIF / NON-AKTIF")
-                 ], item_size=16, line_spacing=36)
+                     ("• Struktur Data: ", "Hubungan Induk-Anak (Parent-Child)"),
+                     ("• Tingkat Kedudukan: ", "Level 1 (Pimpinan) s.d. Level 4 (Pelaksana)"),
+                     ("• Validasi Keamanan: ", "Mencegah relasi melingkar / rusak"),
+                     ("• Status Keaktifan: ", "Unit berstatus AKTIF atau NON-AKTIF")
+                 ], item_size=15.5, line_spacing=36)
 
     c1.draw_arrow(1040, 315, 1090, 315, color=C_EMERALD, width=3)
 
-    c1.draw_card(1090, 100, 470, 430, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=2.5, radius=10,
-                 header_bg=C_AMBER, header_text="3. Formasi Jabatan & Tupoksi", header_size=18,
+    c1.draw_card(1090, 100, 470, 430, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=3, radius=10,
+                 header_bg=C_AMBER, header_text="3. Formasi Jabatan & Tupoksi Unit", header_size=17.5,
                  items=[
-                     ("• Nomenklatur Jabatan: ", "Nama jabatan struktural"),
-                     ("• Jenjang Eselon: ", "Eselon I.a s.d. IV.a"),
-                     ("• Kuota Formasi ASN: ", "Jumlah alokasi pegawai aparatur"),
-                     ("• Tupoksi Unit: ", "Dasar hukum tugas pokok dan fungsi")
-                 ], item_size=16, line_spacing=36)
+                     ("• Nama Jabatan: ", "Nama jabatan struktural resmi"),
+                     ("• Jenjang Eselon: ", "Eselon I.a, I.b, II.a, II.b, III.a, IV.a"),
+                     ("• Kuota Formasi ASN: ", "Jumlah pegawai aparatur yang disetujui"),
+                     ("• Tupoksi Unit: ", "Tugas pokok dan fungsi operasional")
+                 ], item_size=15.5, line_spacing=36)
 
-    c1.draw_card(40, 550, 1520, 330, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="LOGIKA PENYAJIAN GRAF INTERAKTIF PADA FRONTEND (REACT FLOW CANVAS)", header_size=19,
+    c1.draw_card(40, 550, 1520, 330, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="PENYAJIAN BAGAN POHON INTERAKTIF PADA APLIKASI", header_size=18.5,
                 items=[
-                    ("• Algoritma Flattening: ", "Frontend memanggil GET /api/v1/organizations/tree dan melakukan dekonstruksi payload rekursif menjadi nodes[] dan edges[]."),
-                    ("• Tata Letak Otomatis: ", "Posisi X dan Y setiap node dihitung otomatis berdasarkan kedalaman level eselon dan indeks urutan pengelompokan."),
-                    ("• Integrasi Drawer Rincian: ", "Klik pada node membuka drawer samping yang memuat rincian jabatan struktural, formasi ASN, dan tupoksi aktif."),
-                    ("• Fitur Kanvas Lengkap: ", "Mendukung fitur Zoom In/Out, Panning, MiniMap navigasi, dan pencarian cepat unit kerja.")
+                    ("• Visualisasi Bagan Interaktif: ", "Aplikasi otomatis menyusun struktur organisasi menjadi diagram pohon visual yang mudah dipahami."),
+                    ("• Penataan Otomatis: ", "Posisi kotak unit dihitung rapi berdasarkan tingkatan eselon dan divisi kerja."),
+                    ("• Panel Rincian Cepat: ", "Klik pada kotak unit akan langsung menampilkan formasi jabatan pegawai dan tugas pokok fungsi (tupoksi)."),
+                    ("• Navigasi Mudah: ", "Mendukung fitur perbesar/perkecil (Zoom), geser kanvas (Pan), dan pencarian cepat unit kerja.")
                 ], item_size=15.5, line_spacing=34)
 
     c1.save("master_data_flow.png")
 
-    # Org Hierarchy Tree
-    c2 = UltraCanvas(1600, 900)
-    c2.draw_top_title("BAGAN STRUKTUR POHON ORGANISASI BERJENJANG (ESELON I - IV)",
-                      "Model Representasi Relasi Parent-Child Struktur Kementerian/Lembaga Pemerintah")
+    # Pohon Organisasi Berjenjang
+    c2 = ExecutiveCanvas(1600, 900)
+    c2.draw_top_title("BAGAN POHON STRUKTUR ORGANISASI BERJENJANG (ESELON I - IV)",
+                      "Contoh Representasi Hubungan Induk-Anak Struktur Kementerian/Lembaga Pemerintah")
 
     # Level 1
-    c2.draw_card(600, 100, 400, 85, bg=C_NAVY, border=C_NAVY, border_w=2.5, radius=8,
+    c2.draw_card(600, 100, 400, 85, bg=C_NAVY, border=C_NAVY, border_w=2, radius=8,
                  header_text="Menteri / Kepala Lembaga", header_size=18, header_color=C_WHITE,
-                 items=["Kedudukan: Level 1 (Pimpinan)  •  Status: AKTIF"], item_size=15, item_color=C_GOLD)
+                 items=["Kedudukan: Level 1 (Pimpinan Lembaga)  •  Status: AKTIF"], item_size=15, item_color=C_GOLD)
 
-    # Level 2 (2 Branches)
-    c2.draw_card(200, 230, 520, 115, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=8,
+    # Level 2 (2 Cabang)
+    c2.draw_card(200, 230, 520, 115, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2, radius=8,
                  header_bg=C_BLUE, header_text="Sekretariat Kementerian (Eselon I.a)", header_size=17,
-                 items=["• Kedudukan: Level 2 (Sekretariat Lembaga)", "• Fungsi: Koordinasi pelaksanaan tugas & administrasi"],
+                 items=["• Kedudukan: Level 2 (Sekretariat Lembaga)", "• Fungsi: Koordinasi pelaksanaan tugas, pembinaan & administrasi"],
                  item_size=14.5, line_spacing=24)
 
-    c2.draw_card(880, 230, 520, 115, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=8,
+    c2.draw_card(880, 230, 520, 115, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2, radius=8,
                  header_bg=C_BLUE, header_text="Deputi Bidang Kelembagaan (Eselon I.a)", header_size=17,
-                 items=["• Kedudukan: Level 2 (Pelaksana Utama)", "• Fungsi: Perumusan kebijakan & penataan kelembagaan"],
+                 items=["• Kedudukan: Level 2 (Pelaksana Utama)", "• Fungsi: Perumusan kebijakan & penataan kelembagaan nasional"],
                  item_size=14.5, line_spacing=24)
 
     c2.draw_arrow(700, 185, 460, 230, color=C_NAVY, width=2)
     c2.draw_arrow(900, 185, 1140, 230, color=C_NAVY, width=2)
 
-    # Level 3 (4 Sub-units)
+    # Level 3 (4 Unit)
     c2.draw_card(40, 395, 360, 155, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2, radius=8,
                  header_text="Biro SDM & Organisasi", header_size=17, header_color=C_BLUE,
-                 items=["• Level 3 (Eselon II.a)", "• Parent: Sekretariat", "• Formasi: 24 Pegawai ASN"],
+                 items=["• Level 3 (Eselon II.a)", "• Induk: Sekretariat", "• Formasi: 24 Pegawai ASN"],
                  item_size=14.5, line_spacing=26)
 
     c2.draw_card(425, 395, 360, 155, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2, radius=8,
                  header_text="Biro Perencanaan & Kerjasama", header_size=17, header_color=C_BLUE,
-                 items=["• Level 3 (Eselon II.a)", "• Parent: Sekretariat", "• Formasi: 18 Pegawai ASN"],
+                 items=["• Level 3 (Eselon II.a)", "• Induk: Sekretariat", "• Formasi: 18 Pegawai ASN"],
                  item_size=14.5, line_spacing=26)
 
     c2.draw_card(810, 395, 360, 155, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2, radius=8,
                  header_text="Asdep Tata Laksana", header_size=17, header_color=C_BLUE,
-                 items=["• Level 3 (Eselon II.a)", "• Parent: Deputi Kelembagaan", "• Formasi: 16 Pegawai ASN"],
+                 items=["• Level 3 (Eselon II.a)", "• Induk: Deputi Kelembagaan", "• Formasi: 16 Pegawai ASN"],
                  item_size=14.5, line_spacing=26)
 
     c2.draw_card(1195, 395, 365, 155, bg=C_WHITE, border=C_BLUE_BORDER, border_w=2, radius=8,
                  header_text="Asdep Struktur K/L", header_size=17, header_color=C_BLUE,
-                 items=["• Level 3 (Eselon II.a)", "• Parent: Deputi Kelembagaan", "• Formasi: 20 Pegawai ASN"],
+                 items=["• Level 3 (Eselon II.a)", "• Induk: Deputi Kelembagaan", "• Formasi: 20 Pegawai ASN"],
                  item_size=14.5, line_spacing=26)
 
     c2.draw_arrow(350, 345, 220, 395, color=C_BLUE, width=2)
@@ -738,149 +786,149 @@ def render_master_data_hierarchy():
     c2.draw_arrow(1030, 345, 990, 395, color=C_BLUE, width=2)
     c2.draw_arrow(1250, 345, 1375, 395, color=C_BLUE, width=2)
 
-    c2.draw_card(40, 580, 1520, 300, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                 header_bg=C_NAVY, header_text="MODEL DATA ADJACENCY LIST & DFS ANTI-CYCLE VALIDATION", header_size=19,
+    c2.draw_card(40, 580, 1520, 300, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                 header_bg=C_NAVY, header_text="MODEL PENYIMPANAN DATA EFISIEN & AMAN", header_size=18.5,
                  items=[
-                     ("• Penyimpanan Efisien: ", "Setiap unit kerja hanya menyimpan pointer ID induk (parent_id) yang merujuk pada tabel yang sama."),
-                     ("• Rekursi Aman: ", "Algoritma DFS memvalidasi pohon saat usulan diajukan untuk memastikan tidak ada hubungan melingkar (circular loop).")
+                     ("• Penyimpanan Ringkas: ", "Setiap unit kerja hanya menyimpan penunjuk ID induknya sehingga basis data tetap ringan dan cepat diakses."),
+                     ("• Validasi Pohon Otomatis: ", "Saat usulan diajukan, sistem otomatis memverifikasi bahwa struktur pohon tidak memiliki kesalahan relasi.")
                  ], item_size=15.5, line_spacing=34)
 
     c2.save("org_hierarchy_tree.png")
 
 # -------------------------------------------------------------
-# 9. AUTH & SECURITY FLOW
+# 9. OTENTIKASI & KEAMANAN SESI (JWT)
 # -------------------------------------------------------------
 def render_auth_security():
-    c = UltraCanvas(1600, 900)
-    c.draw_top_title("ALUR OTENTIKASI JWT & VALIDASI SESI PENGGUNA",
-                     "Siklus Autentikasi Kriptografis, Token Provider, dan Otorisasi Zero-Trust Multi-Tenant")
+    c = ExecutiveCanvas(1600, 900)
+    c.draw_top_title("ALUR MASUK SISTEM (LOGIN) & KEAMANAN SESI PENGGUNA",
+                     "Siklus Autentikasi Pengguna Menggunakan Token Kriptografis (JWT) dan Penegakan Hak Akses Aman")
 
-    c.draw_card(40, 100, 470, 440, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2.5, radius=10,
-                header_bg=C_BLUE, header_text="1. Login (POST /auth/login)", header_size=18,
+    c.draw_card(40, 100, 470, 440, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
+                header_bg=C_BLUE, header_text="1. Masuk Sistem (Login)", header_size=17.5,
                 items=[
-                    ("• Input: ", "NIP / Username & Password"),
-                    ("• Validasi: ", "Pencocokan kredensial & hash"),
-                    ("• Penerbitan: ", "JWT ditandatangani HMAC-SHA256"),
-                    ("• Klaim Token: ", "uid, nip, role, home_inst_id"),
-                    ("• Keamanan: ", "Rate limiting brute-force"),
-                    ("• Balikan: ", "Token JWT & data profil user")
-                ], item_size=16, line_spacing=36)
+                    ("• Masukan: ", "NIP / Nama Pengguna & Kata Sandi"),
+                    ("• Validasi Server: ", "Pencocokan akun & kata sandi aman"),
+                    ("• Penerbitan Token: ", "Menerbitkan Token Digital JWT Resmi"),
+                    ("• Isi Token: ", "ID Pengguna, NIP, Peran, Instansi Asal"),
+                    ("• Keamanan: ", "Perlindungan dari upaya tebak sandi"),
+                    ("• Respon: ", "Token aktif & data profil pengguna")
+                ], item_size=15.5, line_spacing=36)
 
     c.draw_arrow(515, 320, 565, 320, color=C_BLUE, width=3)
 
-    c.draw_card(565, 100, 470, 440, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=2.5, radius=10,
-                header_bg=C_EMERALD, header_text="2. Token Provider & Injeksi", header_size=18,
+    c.draw_card(565, 100, 470, 440, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
+                header_bg=C_EMERALD, header_text="2. Penyimpanan & Penyisipan Token", header_size=17.5,
                 items=[
-                    ("• Penyimpanan: ", "Browser Storage via TokenProvider"),
-                    ("• Injeksi Header: ", "Authorization: Bearer <token>"),
-                    ("• Otomasi Klien: ", "HttpClient menyisipkan otomatis"),
-                    ("• Penanganan Sesi: ", "Pembersihan token saat logout"),
-                    ("• Error Status: ", "Penanganan 401 terpusat")
-                ], item_size=16, line_spacing=36)
+                    ("• Penyimpanan: ", "Tersimpan aman di memori browser"),
+                    ("• Penyisipan Otomatis: ", "Token otomatis disertakan di setiap request"),
+                    ("• Klien Jaringan: ", "Aplikasi menjaga sesi tetap terhubung"),
+                    ("• Keluar Sistem: ", "Token langsung dihapus saat pengguna keluar"),
+                    ("• Penanganan Sesi: ", "Pengalihan aman jika sesi habis waktu")
+                ], item_size=15.5, line_spacing=36)
 
     c.draw_arrow(1040, 320, 1090, 320, color=C_EMERALD, width=3)
 
-    c.draw_card(1090, 100, 470, 440, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=2.5, radius=10,
-                header_bg=C_PURPLE, header_text="3. Profil Sesi (GET /auth/me)", header_size=18,
+    c.draw_card(1090, 100, 470, 440, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=3, radius=10,
+                header_bg=C_PURPLE, header_text="3. Validasi Profil & Batasan Akses", header_size=17.5,
                 items=[
-                    ("• AuthFilter: ", "Backend validasi integritas JWT"),
-                    ("• ScopeResolver: ", "Ambil daftar wewenang K/L sah"),
-                    ("• Inisialisasi: ", "RoleContext memuat permissions"),
-                    ("• Isolasi: ", "Role dikunci; switcher mati"),
-                    ("• Proteksi IDOR: ", "Blokir 403 jika scope dilanggar")
-                ], item_size=16, line_spacing=36)
+                    ("• Pemeriksaan Token: ", "Server memeriksa keaslian token digital"),
+                    ("• Penetapan Wilayah: ", "Server menentukan daftar K/L yang sah diakses"),
+                    ("• Pengaturan Menu: ", "Tampilan antarmuka disesuaikan dengan peran"),
+                    ("• Penguncian Peran: ", "Peran terkunci; tidak bisa diubah sendiri"),
+                    ("• Blokir Otomatis: ", "Akses langsung ditolak jika mencoba buka K/L lain")
+                ], item_size=15.5, line_spacing=36)
 
-    c.draw_card(40, 560, 1520, 320, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=2.5, radius=10,
-                header_bg=C_NAVY, header_text="MEKANISME ISOLASI PERSONA & ZERO-TRUST AUTHORIZATION", header_size=19,
+    c.draw_card(40, 560, 1520, 320, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
+                header_bg=C_NAVY, header_text="JAMINAN KEAMANAN DATA TINGKAT TINGGI", header_size=18.5,
                 items=[
-                    ("• Mode API Produksi (NEXT_PUBLIC_DATA_MODE=api): ", "Persona switcher pada antarmuka dikunci menjadi Read-Only Badge."),
-                    ("• Larangan Manipulasi Klien: ", "Setiap manipulasi role pada browser ditolak mutlak oleh backend karena wewenang diverifikasi dari token JWT."),
-                    ("• Proteksi BOLA / IDOR: ", "Pemeriksaan kepemilikan instansi diterapkan pada setiap controller melalui ScopeResolver."),
-                    ("• Penolakan Tegas (Anti Mock-Fallback): ", "Jika terjadi kesalahan otorisasi (401/403), UI secara tegas menampilkan layar akses ditolak tanpa mock data.")
+                    ("• Mode Produksi Resmi: ", "Pengganti peran manual di browser dinonaktifkan permanen saat terhubung ke server utama."),
+                    ("• Tolak Manipulasi Klien: ", "Segala upaya manipulasi peran pada browser akan langsung ditolak mentah-mentah oleh server backend."),
+                    ("• Perlindungan Data Instansi: ", "Server memverifikasi kepemilikan instansi pada setiap proses untuk mencegah kebocoran data antar K/L/D."),
+                    ("• Keamanan Tanpa Kompromi: ", "Jika hak akses tidak sah, sistem langsung menampilkan pesan 'Akses Ditolak' secara tegas dan aman.")
                 ], item_size=15.5, line_spacing=34)
 
     c.save("auth_jwt_flow.png")
 
 # -------------------------------------------------------------
-# 10. UI PROTOTYPES
+# 10. PROTOTIPE TAMPILAN APLIKASI
 # -------------------------------------------------------------
 def render_ui_prototypes():
     screens = [
         ("prototype_login.png", "SCR-18: LAYAR MASUK SISTEM (LOGIN)", [
-            ("• Header Institusi: ", "Lambang Garuda Pancasila & Identitas Resmi KemenPANRB / SIGMA-K."),
-            ("• Card Autentikasi: ", "Form input NIP / Username dan Password dengan validasi format ketat."),
-            ("• Dual-Mode Selector: ", "Saklar mode API Live (CodeIgniter 4 eskld_db) vs Mock Simulation."),
-            ("• Akun Presets Cepat: ", "Pilihan cepat akun uji (USER Operator, ADMIN Penapis, VERIFIER Verifikator)."),
-            ("• Keamanan Sesi: ", "Inisialisasi token JWT Bearer langsung ke Browser Storage saat autentikasi sukses.")
+            ("• Identitas Resmi Pemerintah: ", "Lambang Garuda Pancasila dan identitas resmi KemenPANRB / SIGMA-K."),
+            ("• Formulir Masuk Aman: ", "Kolom isian NIP / Nama Pengguna dan Kata Sandi dengan validasi ketat."),
+            ("• Pilihan Mode Operasional: ", "Dukungan mode API Live (Server Nyata) dan mode Simulasi Draf."),
+            ("• Kemudahan Masuk Cepat: ", "Pilihan cepat akun percontohan (Operator Instansi, Penapis, Verifikator)."),
+            ("• Pengamanan Sesi: ", "Penerbitan token digital resmi langsung setelah pengguna berhasil masuk.")
         ]),
-        ("prototype_dashboard.png", "SCR-01: DASHBOARD EKSEKUTIF KELEMBAGAAN", [
-            ("• 4 Kartu KPI Utama: ", "Total Usulan (Live), Dalam Proses Telaah, Disetujui, dan Promosi Master Data."),
-            ("• Sorotan Kabinet: ", "Widget aktif Kabinet Merah Putih & komposisi kementerian koordinator."),
-            ("• Antrean Usulan: ", "Tabel status berkas terkini dengan indikator badge warna dinamis."),
-            ("• Pengesahan Terkini: ", "Rekam jejak Surat Keputusan (SK) resmi yang baru disahkan oleh Verifikator."),
-            ("• Mode Indicator: ", "Badge 'API Live Verified' menandakan integrasi backend aktif penuh.")
+        ("prototype_dashboard.png", "SCR-01: DASHBOARD EKSEKUTIF PIMPINAN", [
+            ("• 4 Indikator Capaian Utama (KPI): ", "Total Usulan Masuk, Usulan Dalam Telaah, Usulan Disetujui, dan Promosi Selesai."),
+            ("• Sorotan Kabinet Aktif: ", "Informasi Kabinet Merah Putih dan daftar kementerian koordinator terkait."),
+            ("• Tabel Antrean Usulan: ", "Daftar usulan organisasi terkini lengkap dengan label warna status yang jelas."),
+            ("• Pengesahan SK Terkini: ", "Daftar Surat Keputusan (SK) resmi yang baru saja disahkan oleh Verifikator."),
+            ("• Indikator Status Sistem: ", "Label hijau 'Server Aktif Terhubung' memastikan sistem berjalan prima.")
         ]),
         ("prototype_institutions.png", "SCR-02: KATALOG MASTER INSTANSI PEMERINTAH", [
-            ("• Filter Tabs: ", "Semua K/L/D, Kementerian Koordinator, Kementerian, LPNK, Lembaga Non-Struktural, Pemda."),
-            ("• Pencarian Cepat: ", "Pencarian instan berdasarkan Kode Instansi (KL-xxx) atau Nama Lengkap Instansi."),
-            ("• Tabel Master: ", "Menampilkan kode instansi, nama resmi, jumlah unit kerja, posisi, dan status aktif."),
-            ("• Aksi Terintegrasi: ", "Tombol navigasi langsung ke 'Bagan Struktur Organisasi' dan 'Rincian Profil Instansi'.")
+            ("• Tab Penyaring Instansi: ", "Semua K/L/D, Kementerian Koordinator, Kementerian, LPNK, Lembaga, dan Pemda."),
+            ("• Pencarian Cepat: ", "Pencarian instan berdasarkan Kode Instansi (misal: KL-001) atau Nama Instansi."),
+            ("• Tabel Master Lengkap: ", "Menampilkan kode resmi, nama instansi, jumlah unit kerja, posisi, dan status keaktifan."),
+            ("• Navigasi Cepat: ", "Tombol langsung menuju 'Bagan Pohon Organisasi' dan 'Rincian Profil Instansi'.")
         ]),
-        ("prototype_org_structure.png", "SCR-04: BAGAN STRUKTUR ORGANISASI INTERAKTIF", [
-            ("• React Flow Canvas: ", "Kanvas graf pohon interaktif dengan kontrol Zoom, Panning, dan MiniMap navigasi."),
-            ("• Custom OrgNode: ", "Kartu node menampilkan kode unit, nama pimpinan, level eselon, dan status aktif."),
-            ("• Garis Konektor Hierarki: ", "Relasi parent-child otomatis tersusun rapi dari Level 1 (Pimpinan) ke Level 4."),
-            ("• Drawer Rincian Samping: ", "Klik pada node membuka drawer samping yang memuat daftar formasi jabatan & tupoksi.")
+        ("prototype_org_structure.png", "SCR-04: BAGAN POHON STRUKTUR ORGANISASI", [
+            ("• Kanvas Interaktif: ", "Bagan struktur organisasi visual dengan kontrol perbesar, perkecil, dan peta mini."),
+            ("• Kotak Unit Kerja: ", "Menampilkan kode unit, nama pimpinan, tingkat eselon, dan status aktif."),
+            ("• Garis Hubungan Berjenjang: ", "Garis hubungan induk-anak tersusun rapi dari Pimpinan (Level 1) ke Pelaksana."),
+            ("• Panel Rincian Samping: ", "Klik pada kotak unit membuka panel rincian formasi jabatan pegawai dan tupoksi.")
         ]),
-        ("prototype_submission_detail.png", "SCR-09: RINCIAN USULAN & DIFF VIEWER", [
-            ("• Workflow Stepper: ", "Visualisasi progress tahapan (Draft -> Penapisan -> Telaah -> Pengesahan SK)."),
-            ("• Metadata Usulan: ", "Nomor Tiket (TKT-2026-xxxx), Instansi Pengusul, Tanggal Pengajuan, dan Author NIP."),
-            ("• Diff Viewer Engine: ", "Komparasi Before vs After (Unit Baru [HIJAU], Unit Dihapus [MERAH], Update [KUNING])."),
-            ("• Tab Riwayat Koreksi: ", "Rekam jejak koreksi catatan telaah dari Admin Gate 1 dan Verifikator Gate 2.")
+        ("prototype_submission_detail.png", "SCR-09: RINCIAN USULAN & PELACAK PERUBAHAN (DIFF)", [
+            ("• Indikator Tahapan Usulan: ", "Visualisasi progres alur (Draf -> Penapisan -> Telaah -> Pengesahan SK)."),
+            ("• Informasi Usulan: ", "Nomor Berkas Usulan, Instansi Pengusul, Tanggal Pengajuan, dan NIP Pembuat."),
+            ("• Pelacak Perubahan (Diff): ", "Unit Baru [Warna Hijau], Unit Dihapus [Warna Merah], Perubahan Formasi [Warna Kuning]."),
+            ("• Riwayat Catatan Koreksi: ", "Rekam jejak catatan telaah dari Penapis Admin maupun Verifikator.")
         ]),
         ("prototype_verifier_workspace.png", "SCR-12: RUANG KERJA TELAAH VERIFIKATOR", [
-            ("• Panel Telaah Substantif: ", "Analisis kesesuaian rentang kendali, beban kerja, dan kuota formasi jabatan ASN."),
-            ("• Form Catatan Teknis: ", "Input catatan telaah substantif per unit kerja pada verifier_review_notes."),
-            ("• Aksi Penolakan / Revisi: ", "Tombol 'Kembalikan untuk Revisi' jika ditemukan ketidaksesuaian substantif."),
-            ("• Pengesahan & Promosi: ", "Tombol 'Pengesahan SK Resmi' yang otomatis memicu migrasi data ke master aktif.")
+            ("• Panel Telaah Substantif: ", "Analisis kesesuaian rentang kendali, beban kerja organisasi, dan formasi ASN."),
+            ("• Isian Catatan Teknis: ", "Kolom input catatan telaah substantif per unit kerja untuk instansi pengusul."),
+            ("• Tombol Kembalikan Revisi: ", "Tombol untuk mengembalikan berkas jika ditemukan kekurangan teknis."),
+            ("• Pengesahan SK & Promosi: ", "Tombol pengesahan SK resmi yang langsung memperbarui data master aktif.")
         ]),
         ("prototype_analytics_reporting.png", "SCR-15: INTELIJENSI DATA & POSTUR ASN", [
-            ("• 4 Proposed KPIs: ", "Indikator efisiensi struktur organisasi & rasio rentang kendali aparatur negara."),
-            ("• Piramida Eselonisasi: ", "Visualisasi distribusi jabatan struktural Eselon I, II, III, dan IV."),
-            ("• SLA Kecepatan Layanan: ", "Durasi rata-rata penyelesaian telaah kelembagaan (Target: < 3 hari kerja)."),
-            ("• Export Center: ", "Tombol unduh laporan resmi dataset (.CSV / .JSON) langsung dari backend CI4.")
+            ("• Metrik Efisiensi Organisasi: ", "Indikator rasio rentang kendali dan beban kerja aparatur sipil negara."),
+            ("• Piramida Eselonisasi: ", "Grafik distribusi jabatan struktural Eselon I, II, III, dan IV seluruh instansi."),
+            ("• Kecepatan Layanan Telaah: ", "Rata-rata durasi penyelesaian telaah kelembagaan (Target: < 3 hari kerja)."),
+            ("• Pusat Ekspor Dokumen: ", "Tombol unduh berkas laporan resmi (.CSV / .JSON) langsung dari server.")
         ]),
         ("prototype_audit_logs.png", "SCR-16: LOG FORENSIK AUDIT TRAIL", [
-            ("• Tabel Log Forensik: ", "Timestamp berpresisi tinggi, Nama Aktor, Role, Aksi (CREATE/UPDATE/APPROVE)."),
-            ("• Konteks Jaringan: ", "Rekam jejak alamat IP klien dan identitas modul/resource yang dimanipulasi."),
-            ("• Modal Inspeksi Payload: ", "Inspeksi mendalam perbandingan snapshot JSON (old_payload vs new_payload)."),
-            ("• Integritas Append-Only: ", "Catatan tersimpan permanen dan tidak dapat dimanipulasi oleh siapapun.")
+            ("• Tabel Riwayat Mutasi Data: ", "Waktu transaksi presisi tinggi, Nama Pengguna, Peran, dan Tindakan yang dilakukan."),
+            ("• Informasi Jaringan Pengguna: ", "Rekam jejak alamat IP dan aplikasi peramban (browser) yang digunakan."),
+            ("• Penampil Perubahan Data: ", "Kotak perbandingan data sebelum vs sesudah perubahan secara transparan."),
+            ("• Jaminan Keamanan Mutlak: ", "Catatan tersimpan permanen dan tidak dapat dihapus oleh pihak manapun.")
         ])
     ]
 
     for fname, title, bullet_points in screens:
-        c = UltraCanvas(1600, 900)
-        c.draw_top_title(f"PROTOTYPE / WIREFRAME: {title}",
-                         "Spesifikasi Desain Antarmuka Terverifikasi Berdasarkan Implementasi Frontend Next.js")
+        c = ExecutiveCanvas(1600, 900)
+        c.draw_top_title(f"PROTOTIPE / TAMPILAN: {title}",
+                         "Spesifikasi Antarmuka Terverifikasi yang Telah Siap Operasional pada Aplikasi SIGMA-K")
 
         c.draw_card(40, 95, 1520, 780, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=12,
-                    header_bg=C_NAVY, header_text=f"APLIKASI SIGMA-K - KEMENPANRB  |  {title.split(':')[0]}", header_size=20)
+                    header_bg=C_NAVY, header_text=f"APLIKASI SIGMA-K - KEMENPANRB  |  {title.split(':')[0]}", header_size=19)
 
-        # TopBar inside Card
+        # TopBar Sesi di Dalam
         c.draw_card(65, 155, 1470, 60, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=6,
                     header_text="", header_size=16)
         c.draw.text((85, 185), "E-SKLD / SIGMA-K  •  Sistem Pengelolaan Data Kelembagaan", fill=C_BLUE, font=get_font(bold=True, size=18), anchor="lm")
-        c.draw.text((1515, 185), "[Sesi Aktif: VERIFIER KELEMBAGAAN - NIP: 198001012005011001]", fill=C_EMERALD, font=get_font(bold=True, size=16), anchor="rm")
+        c.draw.text((1515, 185), "[Sesi Pengguna: VERIFIKATOR KELEMBAGAAN - NIP: 198001012005011001]", fill=C_EMERALD, font=get_font(bold=True, size=16), anchor="rm")
 
-        # Inner Content Canvas Area
+        # Konten Utama
         c.draw_card(65, 230, 1470, 620, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=8,
-                    header_bg=C_BLUE_LIGHT, header_text="RINGKASAN ELEMEN & SPESIFIKASI LAYAR", header_size=18, header_color=C_BLUE,
-                    items=bullet_points, item_size=17, line_spacing=46)
+                    header_bg=C_BLUE_LIGHT, header_text="PENJELASAN ELEMEN & FUNGSI PADA LAYAR", header_size=18, header_color=C_BLUE,
+                    items=bullet_points, item_size=16.5, line_spacing=46)
 
         c.save(fname)
 
 def main():
-    print("=== STARTING ULTRA 16:9 CRISP VECTOR DIAGRAM RENDERING ===")
+    print("=== MEMULAI GENERASI DIAGRAM VEKTOR BAHASA INDONESIA RESMI ===")
     render_system_architecture()
     render_role_access()
     render_submission_lifecycle()
@@ -891,7 +939,7 @@ def main():
     render_master_data_hierarchy()
     render_auth_security()
     render_ui_prototypes()
-    print("=== ALL DIAGRAMS RE-RENDERED WITH PERFECT 16:9 PROPORTIONS ===")
+    print("=== SELURUH DIAGRAM BAHASA INDONESIA BERHASIL DIRENDER ===")
 
 if __name__ == '__main__':
     main()

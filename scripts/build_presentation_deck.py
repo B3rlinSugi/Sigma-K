@@ -1,5 +1,8 @@
 """
-Script to generate an executive presentation deck (PPTX) for SIGMA-K Design & Prototype.
+Script Generator Presentasi Eksekutif (PPTX) E-SKLD / SIGMA-K Berbahasa Indonesia.
+Dirancang khusus untuk presentasi kepada Pimpinan dan Mentor:
+- Bahasa Indonesia yang lugas, terstruktur, dan mudah dicerna.
+- Format 16:9 widescreen dengan tata letak simetris dan elegan.
 Output: docs/PRESENTASI_PERANCANGAN_SIGMA-K_v1.0.pptx
 """
 
@@ -14,12 +17,12 @@ from pptx.enum.shapes import MSO_SHAPE
 PPTX_OUT = os.path.abspath('docs/PRESENTASI_PERANCANGAN_SIGMA-K_v1.0.pptx')
 ASSETS_DIR = os.path.abspath('docs/assets')
 
-# Colors
-C_NAVY = RGBColor(11, 42, 74)       # #0B2A4A
-C_BLUE = RGBColor(30, 64, 175)     # #1E40AF
-C_GOLD = RGBColor(212, 175, 55)    # #D4AF37
-C_SLATE = RGBColor(30, 41, 59)     # #1E293B
-C_MUTED = RGBColor(100, 116, 139)  # #64748B
+# Palet Warna Resmi
+C_NAVY = RGBColor(11, 42, 74)       # #0B2A4A (Biru Dongker KemenPANRB)
+C_BLUE = RGBColor(30, 64, 175)     # #1E40AF (Biru Primer)
+C_GOLD = RGBColor(212, 175, 55)    # #D4AF37 (Aksen Emas)
+C_SLATE = RGBColor(30, 41, 59)     # #1E293B (Teks Utama)
+C_MUTED = RGBColor(100, 116, 139)  # #64748B (Teks Sekunder)
 C_WHITE = RGBColor(255, 255, 255)
 C_BG_LIGHT = RGBColor(248, 250, 252)
 
@@ -99,7 +102,7 @@ def build_presentation():
     p2.space_before = Pt(10)
 
     p3 = tf1.add_paragraph()
-    p3.text = "Versi 1.0  |  Status: 100% Lolos Pengujian Otomatis  |  27 Agustus 2026"
+    p3.text = "Versi 1.0  |  Status: 100% Siap Operasional & Lolos Uji  |  27 Agustus 2026"
     p3.font.size = Pt(11)
     p3.font.color.rgb = C_MUTED
     p3.space_before = Pt(30)
@@ -108,7 +111,7 @@ def build_presentation():
     # SLIDE 2: EXECUTIVE SUMMARY & OBJECTIVES
     # =========================================================
     s2 = prs.slides.add_slide(blank_layout)
-    add_header(s2, "1. Gambaran Umum & Tujuan Pengembangan SIGMA-K")
+    add_header(s2, "1. Gambaran Umum & Urgensi Pengembangan SIGMA-K")
     add_footer(s2)
 
     tx2 = s2.shapes.add_textbox(Inches(0.8), Inches(1.5), Inches(5.8), Inches(5.3))
@@ -116,17 +119,17 @@ def build_presentation():
     tf2.word_wrap = True
     
     p = tf2.paragraphs[0]
-    p.text = "Latar Belakang & Urgensi:"
+    p.text = "Latar Belakang & Urgensi Sistem:"
     p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = C_NAVY
 
     bullets = [
-        "Penataan struktur organisasi K/L/D pasca pembentukan Kabinet Merah Putih.",
-        "Kebutuhan single source of truth untuk master data instansi, unit, dan jabatan struktural.",
-        "Standardisasi alur pengusulan (submission) penataan kelembagaan secara transparan.",
-        "Pemisahan wewenang tegas (Separation of Duties): Penapisan Admin (Gate 1) dan Telaah Substantif Verifikator (Gate 2).",
-        "Wewenang pengesahan Surat Keputusan (SK) mutlak di tangan Verifikator."
+        "Penyelarasan struktur organisasi K/L/D pasca penetapan Kabinet Merah Putih.",
+        "Kebutuhan pusat rujukan data tunggal (single source of truth) untuk master data instansi, unit kerja, dan formasi jabatan ASN.",
+        "Digitalisasi dan standardisasi alur pengusulan penataan kelembagaan yang transparan.",
+        "Penerapan pemisahan wewenang kerja (Separation of Duties): Penapisan Formalitas (Tahap 1 Admin) dan Telaah Substantif (Tahap 2 Verifikator).",
+        "Wewenang mutlak pengesahan Surat Keputusan (SK) resmi berada pada Pejabat Verifikator."
     ]
     for b in bullets:
         bp = tf2.add_paragraph()
@@ -144,17 +147,17 @@ def build_presentation():
     tfc = tx_card.text_frame
     tfc.word_wrap = True
     pc = tfc.paragraphs[0]
-    pc.text = "Capaian Validasi Sistem (100% PASS):"
+    pc.text = "Hasil Uji & Validasi Sistem (100% LULUS):"
     pc.font.size = Pt(13)
     pc.font.bold = True
     pc.font.color.rgb = C_BLUE
 
     metrics = [
-        ("105 Frontend Tests PASS", "Integrasi HTTP, Auth, Security, Master Data & Reports."),
-        ("198 Backend PHPUnit Tests", "713 assertions, 0 errors, 0 failures."),
-        ("0 TypeScript & ESLint Errors", "Kompilasi strict type-checking 100% bersih."),
-        ("16 Next.js Routes Compiled", "Semua rute statis & dinamis terkompilasi sukses."),
-        ("21 Relational Database Tables", "Integritas skema MySQL eskld_db terjaga mutlak.")
+        ("105 Pengujian Frontend Lulus", "Integrasi jaringan, keamanan akun, master data & laporan."),
+        ("198 Pengujian Backend Lulus", "713 poin pemeriksaan, 0 kesalahan, 0 kegagalan."),
+        ("0 Peringatan / Kesalahan Kode", "Pemeriksaan tipe data dan standar kode 100% bersih."),
+        ("16 Halaman Siap Operasional", "Seluruh rute halaman aplikasi terkompilasi sukses."),
+        ("21 Tabel Basis Data Relasional", "Integritas skema data MySQL eskld_db terjaga mutlak.")
     ]
     for m_title, m_desc in metrics:
         p_m = tfc.add_paragraph()
@@ -163,16 +166,15 @@ def build_presentation():
         p_m.font.color.rgb = C_SLATE
         p_m.space_before = Pt(8)
 
-    # Helper for single centered 16:9 image
+    # Helper untuk gambar tunggal terpusat (16:9)
     def add_single_diagram(slide_obj, title, filename):
         add_header(slide_obj, title)
         add_footer(slide_obj)
         img_path = os.path.join(ASSETS_DIR, filename)
         if os.path.exists(img_path):
-            # Centered 16:9 image
             slide_obj.shapes.add_picture(img_path, Inches(1.666), Inches(1.35), width=Inches(10.0), height=Inches(5.625))
 
-    # Helper for dual side-by-side images
+    # Helper untuk gambar ganda berdampingan (16:9)
     def add_dual_diagrams(slide_obj, title, file1, file2):
         add_header(slide_obj, title)
         add_footer(slide_obj)
@@ -182,49 +184,49 @@ def build_presentation():
             slide_obj.shapes.add_picture(p1, Inches(0.7), Inches(1.45), width=Inches(5.75), height=Inches(5.35))
             slide_obj.shapes.add_picture(p2, Inches(6.883), Inches(1.45), width=Inches(5.75), height=Inches(5.35))
 
-    # SLIDE 3: SYSTEM ARCHITECTURE
+    # SLIDE 3: ARSITEKTUR SISTEM
     s3 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s3, "2. Arsitektur Sistem 4-Tier E-SKLD / SIGMA-K", 'system_architecture.png')
+    add_single_diagram(s3, "2. Arsitektur Sistem 4 Lapisan Terintegrasi", 'system_architecture.png')
 
-    # SLIDE 4: ROLES & ZERO TRUST
+    # SLIDE 4: PEMBAGIAN PERAN & HAK AKSES
     s4 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s4, "3. Model Otorisasi, Peran Pengguna & Zero-Trust", 'role_access_matrix.png')
+    add_single_diagram(s4, "3. Pembagian Peran Pengguna & Matriks Hak Akses", 'role_access_matrix.png')
 
-    # SLIDE 5: SITEMAP & NAVIGATION
+    # SLIDE 5: SITEMAP & NAVIGASI
     s5 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s5, "4. Struktur Navigasi & Sitemap Aplikasi (16 Rute)", 'sitemap_diagram.png')
+    add_single_diagram(s5, "4. Struktur Navigasi & Sitemap Aplikasi (16 Halaman)", 'sitemap_diagram.png')
 
-    # SLIDE 6: DATABASE ERD
+    # SLIDE 6: STRUKTUR BASIS DATA (ERD)
     s6 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s6, "5. Struktur Data & Entity Relationship Diagram (21 Tabel)", 'erd_diagram.png')
+    add_single_diagram(s6, "5. Struktur Basis Data & Entity Relationship Diagram (21 Tabel)", 'erd_diagram.png')
 
-    # SLIDE 7: MASTER DATA & HIERARCHY
+    # SLIDE 7: POHON HIERARKI ORGANISASI
     s7 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s7, "6. Model Hierarki Organisasi & Bagan React Flow", 'org_hierarchy_tree.png')
+    add_single_diagram(s7, "6. Model Hierarki Organisasi & Bagan Interaktif", 'org_hierarchy_tree.png')
 
-    # SLIDE 8: SUBMISSION FINITE STATE MACHINE
+    # SLIDE 8: SIKLUS HIDUP USULAN (FSM)
     s8 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s8, "7. Siklus Hidup Usulan & Finite State Machine (FSM)", 'submission_lifecycle_fsm.png')
+    add_single_diagram(s8, "7. Alur Tahapan Siklus Hidup Pengusulan Kelembagaan", 'submission_lifecycle_fsm.png')
 
-    # SLIDE 9: GATE 1 & GATE 2 FLOWCHARTS
+    # SLIDE 9: ALUR PENAPISAN (GATE 1) & TELAAH (GATE 2)
     s9 = prs.slides.add_slide(blank_layout)
-    add_dual_diagrams(s9, "8. Alur Kerja Penapisan Gate 1 & Telaah Substantif Gate 2", 'gate1_admin_flowchart.png', 'gate2_verifier_flowchart.png')
+    add_dual_diagrams(s9, "8. Alur Penapisan Formalitas (Tahap 1) & Telaah Substantif (Tahap 2)", 'gate1_admin_flowchart.png', 'gate2_verifier_flowchart.png')
 
-    # SLIDE 10: VERSIONING & DIFF VIEWER
+    # SLIDE 10: VERSIONING & PELACAK PERUBAHAN
     s10 = prs.slides.add_slide(blank_layout)
-    add_single_diagram(s10, "9. Snapshot Versioning & Pelacakan Perubahan (Diff Flow)", 'versioning_diff_flow.png')
+    add_single_diagram(s10, "9. Perekaman Riwayat Versi Draf & Pelacak Perubahan (Diff)", 'versioning_diff_flow.png')
 
-    # SLIDE 11: PROTOTYPE UI: DASHBOARD & KATALOG
+    # SLIDE 11: PROTOTIPE: DASHBOARD & KATALOG INSTANSI
     s11 = prs.slides.add_slide(blank_layout)
-    add_dual_diagrams(s11, "10. Prototype Antarmuka: Dashboard Eksekutif & Master Instansi", 'prototype_dashboard.png', 'prototype_institutions.png')
+    add_dual_diagrams(s11, "10. Prototipe Antarmuka: Dashboard Pimpinan & Katalog Master Instansi", 'prototype_dashboard.png', 'prototype_institutions.png')
 
-    # SLIDE 12: PROTOTYPE UI: ORGANISASI & USULAN
+    # SLIDE 12: PROTOTIPE: BAGAN STRUKTUR & DIFF USULAN
     s12 = prs.slides.add_slide(blank_layout)
-    add_dual_diagrams(s12, "11. Prototype Antarmuka: Bagan React Flow & Diff Usulan", 'prototype_org_structure.png', 'prototype_submission_detail.png')
+    add_dual_diagrams(s12, "11. Prototipe Antarmuka: Bagan Struktur Organisasi & Rincian Diff Usulan", 'prototype_org_structure.png', 'prototype_submission_detail.png')
 
-    # SLIDE 13: PROTOTYPE UI: VERIFIER & ANALYTICS
+    # SLIDE 13: PROTOTIPE: RUANG KERJA VERIFIKATOR & ANALITIK
     s13 = prs.slides.add_slide(blank_layout)
-    add_dual_diagrams(s13, "12. Prototype Antarmuka: Ruang Kerja Verifikator & Analitik", 'prototype_verifier_workspace.png', 'prototype_analytics_reporting.png')
+    add_dual_diagrams(s13, "12. Prototipe Antarmuka: Ruang Kerja Telaah Verifikator & Analitik ASN", 'prototype_verifier_workspace.png', 'prototype_analytics_reporting.png')
 
     # SLIDE 14: KESIMPULAN & PENUTUP
     s14 = prs.slides.add_slide(blank_layout)
@@ -238,17 +240,17 @@ def build_presentation():
     tf14.word_wrap = True
 
     p = tf14.paragraphs[0]
-    p.text = "KESIMPULAN & KESIAPAN IMPLEMENTASI"
+    p.text = "KESIMPULAN & KESIAPAN IMPLEMENTASI SISTEM"
     p.font.size = Pt(24)
     p.font.bold = True
     p.font.color.rgb = C_GOLD
 
     recap = [
         "Arsitektur teruji dan siap produksi (CodeIgniter 4 + MySQL + Next.js 14).",
-        "Pemisahan wewenang mutlak (Gate 1 Screening Admin & Gate 2 Final Approval Verifier).",
-        "Keamanan Zero-Trust & proteksi BOLA/IDOR terintegrasi di seluruh controller.",
-        "Otomasi promosi data pasca pengesahan SK resmi menjamin konsistensi master data nasional.",
-        "Seluruh dokumen teknis (Word, PDF, Presentasi PPTX) telah siap diserahkan kepada mentor."
+        "Pemisahan wewenang kerja yang akuntabel (Tahap 1 Penapis Admin & Tahap 2 Pengesahan SK Verifikator).",
+        "Keamanan sistem tingkat tinggi dengan pembatasan hak akses instansi yang ketat.",
+        "Otomasi pembaruan master data pasca pengesahan SK resmi menjamin konsistensi data nasional.",
+        "Seluruh dokumen teknis resmi (Word, PDF, dan Slide Presentasi) telah siap diserahkan kepada pimpinan."
     ]
     for r in recap:
         pr = tf14.add_paragraph()
@@ -257,9 +259,9 @@ def build_presentation():
         pr.font.color.rgb = C_WHITE
         pr.space_before = Pt(12)
 
-    print(f"Saving Presentation to {PPTX_OUT}...")
+    print(f"Menyimpan Presentasi ke {PPTX_OUT}...")
     prs.save(PPTX_OUT)
-    print("Presentation successfully created!")
+    print("Presentasi berhasil dibuat!")
 
 if __name__ == '__main__':
     build_presentation()
