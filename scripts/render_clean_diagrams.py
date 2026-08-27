@@ -1,9 +1,8 @@
 """
 Generator Diagram Vektor & Prototipe Antarmuka Berbahasa Indonesia untuk SIGMA-K.
-Dirancang khusus untuk konsumsi Pimpinan dan Mentor:
-- Bahasa Indonesia yang lugas, baku, komunikatif, dan mudah dipahami.
-- Format 16:9 widescreen (1600x900) dengan tipografi tegas dan keterbacaan tinggi.
-- 0 Text Overlap, 0 Text Collision, tata letak seimbang dan rapi.
+Termasuk:
+- Skema Relasional Basis Data (Visual SQL ERD) dengan kotak tabel individual, PK/FK, dan panah relasi relasional.
+- Diagram Arsitektur, Alur FSM, Flowchart Gate 1 & Gate 2, Versioning Diff, Pohon Organisasi, dan Prototipe Antarmuka.
 """
 
 import os
@@ -30,16 +29,16 @@ C_BLUE = "#1E40AF"          # Biru Primer
 C_BLUE_LIGHT = "#EFF6FF"    # Latar Biru Lembut
 C_BLUE_BORDER = "#3B82F6"
 C_GOLD = "#D4AF37"          # Aksen Emas
-C_AMBER = "#B45309"         # Oranye / Penapis
+C_AMBER = "#B45309"         # Oranye / Penapis & Usulan
 C_AMBER_LIGHT = "#FFFBEB"
 C_AMBER_BORDER = "#F59E0B"
-C_EMERALD = "#047857"       # Hijau / Verifikator & Sukses
+C_EMERALD = "#047857"       # Hijau / Verifikator & Master Data
 C_EMERALD_LIGHT = "#ECFDF5"
 C_EMERALD_BORDER = "#10B981"
-C_PURPLE = "#6B21A8"        # Ungu / Super Admin & Keputusan
+C_PURPLE = "#6B21A8"        # Ungu / Super Admin & Verifikasi
 C_PURPLE_LIGHT = "#FAF5FF"
 C_PURPLE_BORDER = "#A855F7"
-C_RED = "#DC2626"           # Merah / Revisi & Peringatan
+C_RED = "#DC2626"           # Merah / Revisi
 C_RED_LIGHT = "#FEF2F2"
 C_RED_BORDER = "#EF4444"
 C_SLATE_DARK = "#0F172A"    # Teks Utama
@@ -58,7 +57,6 @@ class ExecutiveCanvas:
     def draw_top_title(self, title, subtitle=None):
         f_title = get_font(bold=True, size=30)
         self.draw.text((self.w / 2, 38), title, fill=C_NAVY, font=f_title, anchor="mm")
-        
         if subtitle:
             f_sub = get_font(bold=False, size=17)
             self.draw.text((self.w / 2, 70), subtitle, fill=C_SLATE_MID, font=f_sub, anchor="mm")
@@ -66,25 +64,20 @@ class ExecutiveCanvas:
     def draw_card(self, x, y, w, h, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=10,
                   header_bg=None, header_text=None, header_color=C_WHITE, header_size=20,
                   items=None, item_size=16, item_color=C_SLATE_DARK, line_spacing=30):
-        # Background card
         self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=bg, outline=border, width=int(border_w))
-
         content_top = y + 14
 
-        # With distinct header banner
         if header_bg and header_text:
             header_h = 42
             self.draw.rounded_rectangle([x, y, x + w, y + header_h], radius=radius, fill=header_bg)
             self.draw.rectangle([x, y + header_h - radius, x + w, y + header_h], fill=header_bg)
             self.draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, outline=border, width=int(border_w))
-            
             f_head = get_font(bold=True, size=header_size)
             self.draw.text((x + w / 2, y + header_h / 2), header_text, fill=header_color, font=f_head, anchor="mm")
             content_top = y + header_h + 14
         elif header_text:
             f_head = get_font(bold=True, size=header_size)
             if not items:
-                # Pill banner single text
                 self.draw.text((x + w / 2, y + h / 2), header_text, fill=header_color, font=f_head, anchor="mm")
             else:
                 self.draw.text((x + w / 2, y + 22), header_text, fill=header_color if header_color != C_WHITE else C_NAVY, font=f_head, anchor="mm")
@@ -107,12 +100,10 @@ class ExecutiveCanvas:
 
     def draw_arrow(self, x1, y1, x2, y2, color=C_BLUE, width=3, label=None, label_bg=C_BLUE_LIGHT, label_color=C_BLUE):
         self.draw.line([(x1, y1), (x2, y2)], fill=color, width=width)
-        
         import math
         angle = math.atan2(y2 - y1, x2 - x1)
         arrow_len = 14
         arrow_angle = math.pi / 6
-        
         p1 = (x2 - arrow_len * math.cos(angle - arrow_angle), y2 - arrow_len * math.sin(angle - arrow_angle))
         p2 = (x2 - arrow_len * math.cos(angle + arrow_angle), y2 - arrow_len * math.sin(angle + arrow_angle))
         self.draw.polygon([(x2, y2), p1, p2], fill=color)
@@ -142,7 +133,6 @@ def render_system_architecture():
     c.draw_top_title("ARSITEKTUR SISTEM E-SKLD / SIGMA-K", 
                      "Integrasi 4 Lapisan: Antarmuka Web (Next.js), Gerbang Jaringan, Logika Bisnis (CodeIgniter 4) & Basis Data MySQL")
 
-    # Lapisan 1
     c.draw_card(40, 95, 1520, 240, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
                 header_bg=C_NAVY, header_text="LAPISAN 1: ANTARMUKA PENGGUNA (Next.js 14 + React 18 + TypeScript)", header_size=19)
 
@@ -186,19 +176,15 @@ def render_system_architecture():
                     "• Penanganan Pesan Galat/Error"
                 ], item_size=15.5, line_spacing=26)
 
-    # Panah Lapisan 1 -> Gerbang
     c.draw_arrow(800, 340, 800, 390, color=C_BLUE, width=3, label="Protokol Aman HTTPS + Token Keamanan JWT", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
 
-    # Gerbang Jaringan
     c.draw_card(220, 390, 1160, 65, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=2, radius=8,
                 header_text="GERBANG JARINGAN & PENYEDIA TOKEN OTENTIKASI (HTTP GATEWAY)", header_size=17.5, header_color=C_BLUE,
                 items=["Klien Jaringan Otomatis  •  Penyisipan Token Resmi  •  Penanganan Kode Akses (401, 403, 404, 500)  •  Batas Waktu Respon 15 Detik"],
                 item_size=15, item_color=C_NAVY, line_spacing=0)
 
-    # Panah Gerbang -> Lapisan 2
     c.draw_arrow(800, 460, 800, 510, color=C_BLUE, width=3, label="Panggilan Layanan REST API Terverifikasi", label_bg=C_BLUE_LIGHT, label_color=C_BLUE)
 
-    # Lapisan 2 Backend
     c.draw_card(40, 510, 1520, 265, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
                 header_bg=C_NAVY, header_text="LAPISAN 2: LOGIKA BISNIS & KEAMANAN SISTEM (CodeIgniter 4.4.8 + PHP 8.2+)", header_size=19)
 
@@ -246,10 +232,8 @@ def render_system_architecture():
                     "• Ekspor Berkas Laporan CSV"
                 ], item_size=15, line_spacing=26)
 
-    # Panah Lapisan 2 -> Basis Data
     c.draw_arrow(800, 780, 800, 825, color=C_EMERALD, width=3, label="Koneksi Aman Relasional MySQL", label_bg=C_EMERALD_LIGHT, label_color=C_EMERALD)
 
-    # Lapisan 3 Basis Data
     c.draw_card(220, 825, 1160, 60, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=8,
                 header_text="LAPISAN 3: PENYIMPANAN DATA UTAMA - MySQL 8.x (eskld_db - 21 Tabel Relasional)", header_size=17.5, header_color=C_EMERALD,
                 items=["Integritas Relasi Kunci  •  Immutabilitas Snapshot Versi  •  Isolasi Data Instansi  •  Log Audit Permanen Anti-Ubah"],
@@ -393,72 +377,11 @@ def render_submission_lifecycle():
     c.save("submission_lifecycle_fsm.png")
 
 # -------------------------------------------------------------
-# 4. DATABASE ERD
+# 4. DATABASE ERD (VISUAL SQL RELATIONAL SCHEMA)
 # -------------------------------------------------------------
 def render_erd():
-    c = ExecutiveCanvas(1600, 900)
-    c.draw_top_title("STRUKTUR DATABASE & ENTITY RELATIONSHIP DIAGRAM (ERD)", 
-                     "Struktur 21 Tabel Relasional eskld_db: Akun & Hak Akses, Master Data Kelembagaan, Usulan & Versioning, Serta Verifikasi & Audit")
-
-    c.draw_card(40, 95, 360, 480, bg=C_BLUE_LIGHT, border=C_BLUE, border_w=3, radius=10,
-                header_bg=C_BLUE, header_text="1. AKUN & HAK AKSES PENGGUNA", header_size=16.5,
-                items=[
-                    ("• users: ", "Data akun, NIP, email, password"),
-                    ("• roles: ", "Daftar 4 peran resmi sistem"),
-                    ("• permissions: ", "Katalog hak akses terperinci"),
-                    ("• role_permissions: ", "Pemetaan hak akses per peran"),
-                    ("• user_scopes: ", "Batasan instansi per pengguna"),
-                    ("• access_grants: ", "Izin akses tugas khusus sementara"),
-                    ("• access_requests: ", "Permohonan akses instansi baru")
-                ], item_size=15, line_spacing=34)
-
-    c.draw_card(425, 95, 360, 480, bg=C_EMERALD_LIGHT, border=C_EMERALD, border_w=3, radius=10,
-                header_bg=C_EMERALD, header_text="2. MASTER DATA KELEMBAGAAN", header_size=16.5,
-                items=[
-                    ("• institutions: ", "Master instansi K/L/Pemda"),
-                    ("• institution_types: ", "Kategori bentuk instansi"),
-                    ("• cabinets: ", "Data kabinet & periode presiden"),
-                    ("• cabinet_institutions: ", "Pemetaan K/L per kabinet"),
-                    ("• organizational_units: ", "Unit kerja aktif (Pohon Adjacency)"),
-                    ("  - level, nama, ", "kode unit, status aktif"),
-                    ("• positions: ", "Jabatan struktural & formasi ASN")
-                ], item_size=15, line_spacing=34)
-
-    c.draw_card(810, 95, 360, 480, bg=C_AMBER_LIGHT, border=C_AMBER, border_w=3, radius=10,
-                header_bg=C_AMBER, header_text="3. USULAN & VERSI DRAF", header_size=16.5,
-                items=[
-                    ("• submissions: ", "Header usulan & status alur"),
-                    ("  - instansi pengusul, ", "tahun, pembuat"),
-                    ("• submission_versions: ", "Riwayat versi draf (v1, v2, dll.)"),
-                    ("• submission_units: ", "Rincian usulan unit baru/ubah/hapus"),
-                    ("  - kode unit, ", "nama unit, jenis tindakan"),
-                    ("• submission_positions: ", "Rincian usulan formasi jabatan"),
-                    ("  - nama jabatan, ", "eselon, jumlah formasi")
-                ], item_size=15, line_spacing=34)
-
-    c.draw_card(1195, 95, 365, 480, bg=C_PURPLE_LIGHT, border=C_PURPLE, border_w=3, radius=10,
-                header_bg=C_PURPLE, header_text="4. PENUGASAN, TELAAH & AUDIT", header_size=16.5,
-                items=[
-                    ("• verifier_assignments: ", "Alokasi berkas ke Verifikator"),
-                    ("• verifier_review_notes: ", "Catatan telaah teknis substantif"),
-                    ("  - unit target, ", "catatan koreksi, status selesai"),
-                    ("• approval_records: ", "Dokumen pengesahan SK resmi"),
-                    ("  - nomor SK, ", "tanggal pengesahan, pejabat"),
-                    ("• audit_logs: ", "Log rekam jejak mutasi data (permanen)"),
-                    ("  - data sebelum/sesudah, ", "IP, NIP pembuat")
-                ], item_size=15, line_spacing=34)
-
-    c.draw_card(40, 595, 1520, 285, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=10,
-                header_bg=C_NAVY, header_text="PENJELASAN INTEGRITAS DATA & HUBUNGAN RELASIONAL", header_size=18.5,
-                items=[
-                    ("• Relasi Kunci Induk-Anak: ", "Seluruh data terhubung dengan kunci relasi (Foreign Key) yang menjamin tidak ada data yatim/rusak."),
-                    ("• Struktur Pohon Anti-Melingkar: ", "Unit kerja terstruktur dari Level 1 (Pimpinan) ke Level 4 dengan algoritma pencegah hubungan melingkar."),
-                    ("• Keamanan Versi Usulan: ", "Draf usulan yang telah diajukan dikunci permanen agar memiliki bukti historis yang tidak dapat diubah."),
-                    ("• Isolasi Data Multi-Instansi: ", "Tabel batasan wilayah memastikan operator hanya dapat mengelola data instansinya sendiri secara aman."),
-                    ("• Forensik Audit Lengkap: ", "Tabel log audit mencatat setiap perubahan data secara transparan untuk pengawasan pimpinan.")
-                ], item_size=15.5, line_spacing=34)
-
-    c.save("erd_diagram.png")
+    import render_visual_sql_erd
+    render_visual_sql_erd.render_visual_sql_erd()
 
 # -------------------------------------------------------------
 # 5. PELACAKAN PERUBAHAN & VERSIONING (DIFF)
@@ -525,11 +448,9 @@ def render_sitemap():
     c.draw_top_title("SITEMAP DAN STRUKTUR NAVIGASI APLIKASI SIGMA-K", 
                      "Peta 16 Halaman Terintegrasi: Pengelompokan Berdasarkan Kebutuhan Layanan dan Hak Akses Pengguna")
 
-    # Pintu Masuk
     c.draw_card(550, 95, 500, 60, bg=C_NAVY, border=C_NAVY, border_w=2, radius=8,
                 header_text="PINTU MASUK: /login (Layar Masuk Sistem)", header_size=18, header_color=C_WHITE)
 
-    # Kerangka Aplikasi
     c.draw_card(500, 175, 600, 65, bg=C_BLUE, border=C_BLUE, border_w=2, radius=8,
                 header_text="KERANGKA APLIKASI (Menu Samping & Status Sesi Aktif)", header_size=18, header_color=C_WHITE)
 
@@ -914,13 +835,11 @@ def render_ui_prototypes():
         c.draw_card(40, 95, 1520, 780, bg=C_SLATE_LIGHT, border=C_NAVY, border_w=3, radius=12,
                     header_bg=C_NAVY, header_text=f"APLIKASI SIGMA-K - KEMENPANRB  |  {title.split(':')[0]}", header_size=19)
 
-        # TopBar Sesi di Dalam
         c.draw_card(65, 155, 1470, 60, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=6,
                     header_text="", header_size=16)
         c.draw.text((85, 185), "E-SKLD / SIGMA-K  •  Sistem Pengelolaan Data Kelembagaan", fill=C_BLUE, font=get_font(bold=True, size=18), anchor="lm")
         c.draw.text((1515, 185), "[Sesi Pengguna: VERIFIKATOR KELEMBAGAAN - NIP: 198001012005011001]", fill=C_EMERALD, font=get_font(bold=True, size=16), anchor="rm")
 
-        # Konten Utama
         c.draw_card(65, 230, 1470, 620, bg=C_WHITE, border=C_BORDER_DEFAULT, border_w=2, radius=8,
                     header_bg=C_BLUE_LIGHT, header_text="PENJELASAN ELEMEN & FUNGSI PADA LAYAR", header_size=18, header_color=C_BLUE,
                     items=bullet_points, item_size=16.5, line_spacing=46)
@@ -928,7 +847,7 @@ def render_ui_prototypes():
         c.save(fname)
 
 def main():
-    print("=== MEMULAI GENERASI DIAGRAM VEKTOR BAHASA INDONESIA RESMI ===")
+    print("=== MEMULAI GENERASI LENGKAP DIAGRAM VEKTOR & VISUAL SQL ERD ===")
     render_system_architecture()
     render_role_access()
     render_submission_lifecycle()
@@ -939,7 +858,7 @@ def main():
     render_master_data_hierarchy()
     render_auth_security()
     render_ui_prototypes()
-    print("=== SELURUH DIAGRAM BAHASA INDONESIA BERHASIL DIRENDER ===")
+    print("=== SELURUH DIAGRAM & VISUAL SQL ERD BERHASIL DIRENDER ===")
 
 if __name__ == '__main__':
     main()

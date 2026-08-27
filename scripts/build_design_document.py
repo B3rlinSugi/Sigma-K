@@ -486,7 +486,10 @@ def build_sigma_k_document():
         ],
         [0.3, 1.4, 1.1, 0.9, 1.3, 1.5]
     )
-    builder.add_image_figure("erd_diagram.png", "Entity Relationship Diagram (ERD) Basis Data eskld_db (21 Tabel)")
+    builder.doc.add_page_break()
+    builder.add_h2("7.2 Bagan Relasi Visual SQL ERD (Bagan Antar Tabel Relasional)")
+    builder.add_p("Bagan visual SQL di bawah ini menyajikan seluruh tabel dengan atribut kolom, kunci utama (PK), kunci relasi (FK), serta garis panah relasional antar tabel:")
+    builder.add_image_figure("erd_diagram.png", "Skema Relasional Basis Data (Visual SQL ERD) eskld_db (21 Tabel Relasional)")
 
     # BAB 8
     builder.add_h1("BAB 8 — ALUR SIKLUS HIDUP PENGUSULAN KELEMBAGAAN")
