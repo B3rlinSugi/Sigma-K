@@ -24,19 +24,16 @@ C_WHITE = RGBColor(255, 255, 255)
 C_BG_LIGHT = RGBColor(248, 250, 252)
 
 def add_header(slide, title_text, category="E-SKLD / SIGMA-K — KEMENPANRB"):
-    # Header Banner
     top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.1))
     top_bar.fill.solid()
     top_bar.fill.fore_color.rgb = C_NAVY
     top_bar.line.color.rgb = C_NAVY
 
-    # Gold Accent Line
     gold_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(1.1), Inches(13.333), Inches(0.06))
     gold_line.fill.solid()
     gold_line.fill.fore_color.rgb = C_GOLD
     gold_line.line.color.rgb = C_GOLD
 
-    # Category Text
     tx_cat = slide.shapes.add_textbox(Inches(0.8), Inches(0.12), Inches(11.7), Inches(0.3))
     p_cat = tx_cat.text_frame.paragraphs[0]
     p_cat.text = category.upper()
@@ -44,7 +41,6 @@ def add_header(slide, title_text, category="E-SKLD / SIGMA-K — KEMENPANRB"):
     p_cat.font.bold = True
     p_cat.font.color.rgb = C_GOLD
 
-    # Title Text
     tx_title = slide.shapes.add_textbox(Inches(0.8), Inches(0.35), Inches(11.7), Inches(0.6))
     p_title = tx_title.text_frame.paragraphs[0]
     p_title.text = title_text
@@ -74,7 +70,6 @@ def build_presentation():
     bg1.fill.fore_color.rgb = C_NAVY
     bg1.line.color.rgb = C_NAVY
 
-    # Gold Accent Box
     gb = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.2), Inches(0.15), Inches(4.8))
     gb.fill.solid()
     gb.fill.fore_color.rgb = C_GOLD
@@ -140,7 +135,6 @@ def build_presentation():
         bp.font.color.rgb = C_SLATE
         bp.space_before = Pt(6)
 
-    # Right Card: Validated Metrics
     card = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.0), Inches(1.5), Inches(5.5), Inches(5.3))
     card.fill.solid()
     card.fill.fore_color.rgb = C_BG_LIGHT
@@ -169,138 +163,70 @@ def build_presentation():
         p_m.font.color.rgb = C_SLATE
         p_m.space_before = Pt(8)
 
-    # =========================================================
+    # Helper for single centered 16:9 image
+    def add_single_diagram(slide_obj, title, filename):
+        add_header(slide_obj, title)
+        add_footer(slide_obj)
+        img_path = os.path.join(ASSETS_DIR, filename)
+        if os.path.exists(img_path):
+            # Centered 16:9 image
+            slide_obj.shapes.add_picture(img_path, Inches(1.666), Inches(1.35), width=Inches(10.0), height=Inches(5.625))
+
+    # Helper for dual side-by-side images
+    def add_dual_diagrams(slide_obj, title, file1, file2):
+        add_header(slide_obj, title)
+        add_footer(slide_obj)
+        p1 = os.path.join(ASSETS_DIR, file1)
+        p2 = os.path.join(ASSETS_DIR, file2)
+        if os.path.exists(p1) and os.path.exists(p2):
+            slide_obj.shapes.add_picture(p1, Inches(0.7), Inches(1.45), width=Inches(5.75), height=Inches(5.35))
+            slide_obj.shapes.add_picture(p2, Inches(6.883), Inches(1.45), width=Inches(5.75), height=Inches(5.35))
+
     # SLIDE 3: SYSTEM ARCHITECTURE
-    # =========================================================
     s3 = prs.slides.add_slide(blank_layout)
-    add_header(s3, "2. Arsitektur Sistem 4-Tier E-SKLD / SIGMA-K")
-    add_footer(s3)
+    add_single_diagram(s3, "2. Arsitektur Sistem 4-Tier E-SKLD / SIGMA-K", 'system_architecture.png')
 
-    img_arch = os.path.join(ASSETS_DIR, 'system_architecture.png')
-    if os.path.exists(img_arch):
-        s3.shapes.add_picture(img_arch, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 4: ROLES & ZERO TRUST
-    # =========================================================
     s4 = prs.slides.add_slide(blank_layout)
-    add_header(s4, "3. Model Otorisasi, Peran Pengguna & Zero-Trust")
-    add_footer(s4)
+    add_single_diagram(s4, "3. Model Otorisasi, Peran Pengguna & Zero-Trust", 'role_access_matrix.png')
 
-    img_role = os.path.join(ASSETS_DIR, 'role_access_matrix.png')
-    if os.path.exists(img_role):
-        s4.shapes.add_picture(img_role, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 5: SITEMAP & NAVIGATION
-    # =========================================================
     s5 = prs.slides.add_slide(blank_layout)
-    add_header(s5, "4. Struktur Navigasi & Sitemap Aplikasi (16 Rute)")
-    add_footer(s5)
+    add_single_diagram(s5, "4. Struktur Navigasi & Sitemap Aplikasi (16 Rute)", 'sitemap_diagram.png')
 
-    img_site = os.path.join(ASSETS_DIR, 'sitemap_diagram.png')
-    if os.path.exists(img_site):
-        s5.shapes.add_picture(img_site, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 6: DATABASE ERD
-    # =========================================================
     s6 = prs.slides.add_slide(blank_layout)
-    add_header(s6, "5. Struktur Data & Entity Relationship Diagram (21 Tabel)")
-    add_footer(s6)
+    add_single_diagram(s6, "5. Struktur Data & Entity Relationship Diagram (21 Tabel)", 'erd_diagram.png')
 
-    img_erd = os.path.join(ASSETS_DIR, 'erd_diagram.png')
-    if os.path.exists(img_erd):
-        s6.shapes.add_picture(img_erd, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 7: MASTER DATA & HIERARCHY
-    # =========================================================
     s7 = prs.slides.add_slide(blank_layout)
-    add_header(s7, "6. Model Hierarki Organisasi & Bagan React Flow")
-    add_footer(s7)
+    add_single_diagram(s7, "6. Model Hierarki Organisasi & Bagan React Flow", 'org_hierarchy_tree.png')
 
-    img_tree = os.path.join(ASSETS_DIR, 'org_hierarchy_tree.png')
-    if os.path.exists(img_tree):
-        s7.shapes.add_picture(img_tree, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 8: SUBMISSION FINITE STATE MACHINE
-    # =========================================================
     s8 = prs.slides.add_slide(blank_layout)
-    add_header(s8, "7. Siklus Hidup Usulan & Finite State Machine (FSM)")
-    add_footer(s8)
+    add_single_diagram(s8, "7. Siklus Hidup Usulan & Finite State Machine (FSM)", 'submission_lifecycle_fsm.png')
 
-    img_fsm = os.path.join(ASSETS_DIR, 'submission_lifecycle_fsm.png')
-    if os.path.exists(img_fsm):
-        s8.shapes.add_picture(img_fsm, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 9: GATE 1 & GATE 2 FLOWCHARTS
-    # =========================================================
     s9 = prs.slides.add_slide(blank_layout)
-    add_header(s9, "8. Alur Kerja Penapisan Gate 1 & Telaah Substantif Gate 2")
-    add_footer(s9)
+    add_dual_diagrams(s9, "8. Alur Kerja Penapisan Gate 1 & Telaah Substantif Gate 2", 'gate1_admin_flowchart.png', 'gate2_verifier_flowchart.png')
 
-    img_g1 = os.path.join(ASSETS_DIR, 'gate1_admin_flowchart.png')
-    img_g2 = os.path.join(ASSETS_DIR, 'gate2_verifier_flowchart.png')
-    if os.path.exists(img_g1) and os.path.exists(img_g2):
-        s9.shapes.add_picture(img_g1, Inches(0.6), Inches(1.5), width=Inches(5.8))
-        s9.shapes.add_picture(img_g2, Inches(6.8), Inches(1.5), width=Inches(5.8))
-
-    # =========================================================
     # SLIDE 10: VERSIONING & DIFF VIEWER
-    # =========================================================
     s10 = prs.slides.add_slide(blank_layout)
-    add_header(s10, "9. Snapshot Versioning & Pelacakan Perubahan (Diff Flow)")
-    add_footer(s10)
+    add_single_diagram(s10, "9. Snapshot Versioning & Pelacakan Perubahan (Diff Flow)", 'versioning_diff_flow.png')
 
-    img_diff = os.path.join(ASSETS_DIR, 'versioning_diff_flow.png')
-    if os.path.exists(img_diff):
-        s10.shapes.add_picture(img_diff, Inches(0.8), Inches(1.4), width=Inches(11.733))
-
-    # =========================================================
     # SLIDE 11: PROTOTYPE UI: DASHBOARD & KATALOG
-    # =========================================================
     s11 = prs.slides.add_slide(blank_layout)
-    add_header(s11, "10. Prototype Antarmuka: Dashboard Eksekutif & Master Instansi")
-    add_footer(s11)
+    add_dual_diagrams(s11, "10. Prototype Antarmuka: Dashboard Eksekutif & Master Instansi", 'prototype_dashboard.png', 'prototype_institutions.png')
 
-    img_dash = os.path.join(ASSETS_DIR, 'prototype_dashboard.png')
-    img_inst = os.path.join(ASSETS_DIR, 'prototype_institutions.png')
-    if os.path.exists(img_dash) and os.path.exists(img_inst):
-        s11.shapes.add_picture(img_dash, Inches(0.6), Inches(1.5), width=Inches(5.8))
-        s11.shapes.add_picture(img_inst, Inches(6.8), Inches(1.5), width=Inches(5.8))
-
-    # =========================================================
     # SLIDE 12: PROTOTYPE UI: ORGANISASI & USULAN
-    # =========================================================
     s12 = prs.slides.add_slide(blank_layout)
-    add_header(s12, "11. Prototype Antarmuka: Bagan React Flow & Diff Usulan")
-    add_footer(s12)
+    add_dual_diagrams(s12, "11. Prototype Antarmuka: Bagan React Flow & Diff Usulan", 'prototype_org_structure.png', 'prototype_submission_detail.png')
 
-    img_org = os.path.join(ASSETS_DIR, 'prototype_org_structure.png')
-    img_sub = os.path.join(ASSETS_DIR, 'prototype_submission_detail.png')
-    if os.path.exists(img_org) and os.path.exists(img_sub):
-        s12.shapes.add_picture(img_org, Inches(0.6), Inches(1.5), width=Inches(5.8))
-        s12.shapes.add_picture(img_sub, Inches(6.8), Inches(1.5), width=Inches(5.8))
-
-    # =========================================================
     # SLIDE 13: PROTOTYPE UI: VERIFIER & ANALYTICS
-    # =========================================================
     s13 = prs.slides.add_slide(blank_layout)
-    add_header(s13, "12. Prototype Antarmuka: Ruang Kerja Verifikator & Analitik")
-    add_footer(s13)
+    add_dual_diagrams(s13, "12. Prototype Antarmuka: Ruang Kerja Verifikator & Analitik", 'prototype_verifier_workspace.png', 'prototype_analytics_reporting.png')
 
-    img_ver = os.path.join(ASSETS_DIR, 'prototype_verifier_workspace.png')
-    img_ana = os.path.join(ASSETS_DIR, 'prototype_analytics_reporting.png')
-    if os.path.exists(img_ver) and os.path.exists(img_ana):
-        s13.shapes.add_picture(img_ver, Inches(0.6), Inches(1.5), width=Inches(5.8))
-        s13.shapes.add_picture(img_ana, Inches(6.8), Inches(1.5), width=Inches(5.8))
-
-    # =========================================================
     # SLIDE 14: KESIMPULAN & PENUTUP
-    # =========================================================
     s14 = prs.slides.add_slide(blank_layout)
     bg14 = s14.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(7.5))
     bg14.fill.solid()
